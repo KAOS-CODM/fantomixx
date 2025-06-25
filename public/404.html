@@ -63,6 +63,69 @@
                 box-shadow: 0 0 10px #00ffff99;
             }
 
+            .spaceship{
+                position: absolute;
+                top: 10%;
+                left: -10%;
+                font-size: 3rem;
+                animation: flyAcross 10s linear infinite;
+            }
+
+            @keyframes flyAcross{
+                0% { left: -10%; transform: rotate(10deg); }
+                100% { left: 90%; transform: rotate(-10deg); }
+            }
+
+            .samurai{
+                position: absolute;
+                bottom: 30px;
+                right: 30px;
+                font-size: 3rem;
+                animation: samuraiBounce 2.5s ease-in-out infinite;
+            }
+
+            @keyframes samuraiBounce{
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .star{
+                position: absolute;
+                font-size: 1.5rem;
+                opacity: 0.7;
+                animation: twinkle 4s ease-in-out infinite alternate;
+            }
+
+            .star.one { top:20%; left:70%; animation-delay:0s; }
+            .star.two { top:40%; left:20%; animation-delay:1s; }
+            .star.three { top:60%; left:50%; animation-delay:2s; }
+            .star.four { top:50%; left:70%; animation-delay:3s; }
+            .star.five { top:80%; left:20%; animation-delay:4s; }
+            .star.six { top:27%; left:50%; animation-delay:5s; }
+            .star.seven { top:10%; left:70%; animation-delay:6s; }
+            .star.eight { top:30%; left:20%; animation-delay:7s; }
+            .star.nine { top:70%; left:50%; animation-delay:8s; }
+
+            @keyframes twinkle{
+                0% { opacity: 0.3; transform: scale(0.9); }
+                100% { opacity: 1; transform: scale(1.1); }
+            }
+
+            .katana{
+                position: absolute;
+                top: 40%;
+                left: 10%;
+                font-size: 2.5rem;
+                transform: rotate(-45deg);
+                animation: floatBlade 4s ease-in-out infinite;
+            }
+
+            @keyframes floatBlade{
+                0% { transform: rotate(-45deg) translateY(0); }
+                50% { transform: rotate(-45deg) translateY(-10px); }
+                100% { transform: rotate(-45deg) translateY(0); }
+            }
+
             @media(max-width: 600px){
                 h1{
                     font-size: 4.5rem;
@@ -83,5 +146,18 @@
         </p>
 
         <a href="index.html" class="btn-home">🏠 Return Home</a>
+
+        <div class="katana">&#9876;&#65039;</div>
+        <div class="spaceship">&#128640;</div>
+        <div class="samurai">&#127545;&#128121;</div>
+        <div class="star one">&#11088;</div>
+        <div class="star two">&#127775;</div>
+        <div class="star three">&#10024;</div>
+        <div class="star four">&#11088;</div>
+        <div class="star five">&#127775;</div>
+        <div class="star six">&#10024;</div>
+        <div class="star seven">&#11088;</div>
+        <div class="star eigth">&#127775;</div>
+        <div class="star nine">&#10024;</div>
     </body>
 </html>
