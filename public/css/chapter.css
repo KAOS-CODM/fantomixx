@@ -1,0 +1,100 @@
+/* css/comic.css */
+#comic-details {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 12px;
+  }
+  
+  #comic-details h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  
+  #comic-details img {
+    max-width: 200px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: block;
+  }
+  
+  #comic-details p {
+    font-size: 16px;
+    color: #ccc;
+    margin: 6px 0;
+  }
+  
+  #comic-details h3 {
+    margin-top: 30px;
+    font-size: 22px;
+    color: #fff;
+  }
+  
+  #chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  #chapter-grid a {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease;
+  }
+  
+  #chapter-grid a:hover {
+    transform: scale(1.02);
+  }
+  
+  #chapter-grid img {
+    width: 100%;
+    display: block;
+    border-radius: 6px 6px 0 0;
+  }
+  
+  #chapter-grid div {
+    background: #222;
+    padding: 10px;
+    border-radius: 0 0 6px 6px;
+    text-align: center;
+    color: #eee;
+  }
+  @media (max-width: 600px) {
+    #comic-details {
+      padding: 15px;
+    }
+  
+    #comic-details h2 {
+      font-size: 22px;
+      text-align: center;
+    }
+  
+    #comic-details img {
+      max-width: 100%;
+      margin: 15px auto;
+    }
+  
+    #comic-details p {
+      font-size: 14px;
+      text-align: center;
+    }
+  
+    #comic-details h3 {
+      font-size: 18px;
+      text-align: center;
+    }
+  
+    #chapter-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+    }
+  
+    #chapter-grid div {
+      font-size: 14px;
+      padding: 8px;
+    }
+  }
+  

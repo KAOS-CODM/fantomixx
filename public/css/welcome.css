@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #eee;
+  }
+  
+  .hero {
+    position: relative;
+    height: 100vh;
+    background: url('../assets/mystic-bg.jpg') center/cover no-repeat;
+  }
+  
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px #6f00ff;
+  }
+  
+  .subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    text-shadow: 0 0 10px #ff00ff;
+  }
+  
+  .enter-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #6f00ff, #9900ff);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px #6f00ff;
+    transition: all 0.3s ease;
+  }
+  
+  .enter-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #ff00ff;
+  }
+  
+  /* Latest Updates */
+  .latest-updates {
+    padding: 2rem;
+    background-color: #111;
+    text-align: center;
+  }
+  
+  .latest-updates h2 {
+    margin-bottom: 1rem;
+    color: #cfaaff;
+    text-shadow: 0 0 5px #9900ff;
+  }
+  
+  .updates-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .update-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 1rem;
+    max-width: 250px;
+    text-align: left;
+    box-shadow: 0 0 10px rgba(155, 0, 255, 0.4);
+  }
+  
+  .update-card h3 {
+    margin: 0 0 0.5rem;
+    color: #f0caff;
+  }
+  
+  .update-card p {
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  

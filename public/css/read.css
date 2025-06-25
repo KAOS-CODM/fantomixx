@@ -1,0 +1,197 @@
+/* css/read.css */
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#reader-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+#reader-container h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #fff;
+}
+
+#reader-container a {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #00d9ff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+#reader-container a:hover {
+  color: #ffffff;
+}
+
+#reader-container img {
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.toggle-wrapper {
+    margin: 10px 0;
+    text-align: right;
+  }
+  
+  .auto-nav-label {
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    vertical-align: middle;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #4caf50;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
+  .reader-header {
+    margin: 15px 0;
+  }
+  
+  .reader-header h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .back-link {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  
+.chapter-image {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    line-height: 0;
+    vertical-align: top;
+  }
+
+  /* Mystical Chapter Dropdown */
+.mystical-dropdown-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.mystical-dropdown {
+  background: linear-gradient(145deg, #0e0e1a, #1c1c2e);
+  border: 2px solid rgba(150, 100, 255, 0.4);
+  box-shadow: 0 0 10px rgba(130, 90, 255, 0.4), inset 0 0 5px rgba(130, 90, 255, 0.2);
+  color:#007bff;
+  font-size: 1.1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 10px 15px;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none;
+  position: relative;
+  z-index: 1;
+}
+
+.mystical-dropdown:hover {
+  box-shadow: 0 0 15px rgba(170, 110, 255, 0.6), inset 0 0 8px rgba(170, 110, 255, 0.3);
+  transform: scale(1.02);
+}
+
+.mystical-dropdown:focus {
+  border-color: #aa77ff;
+  box-shadow: 0 0 20px rgba(180, 120, 255, 0.8);
+}
+
+  @media (max-width: 600px) {
+    #reader-container {
+      padding: 10px;
+    }
+  
+    #reader-container h2,
+    .reader-header h2 {
+      font-size: 18px;
+    }
+  
+    .back-link,
+    .auto-nav-label {
+      font-size: 12px;
+    }
+  
+    .switch {
+      width: 40px;
+      height: 20px;
+    }
+  
+    .slider:before {
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+    }
+  
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  
+    .chapter-image {
+      border-radius: 0; /* remove rounding on small screens */
+      box-shadow: none; /* remove glow for tighter feel */
+    }
+  }
+  

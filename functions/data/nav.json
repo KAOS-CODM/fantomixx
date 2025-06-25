@@ -1,0 +1,14 @@
+[
+  { "label": "Home", "icon": "🏠", "link": "index.html" },
+  {
+    "label": "Comics",
+    "icon": "📚",
+    "dropdown": [
+      { "label": "All Comics", "link": "comic.html" },
+      { "label": "Genres", "link": "genres.html" },
+      { "label": "Latest Releases", "link": "latest.html" }
+    ]
+  },
+  { "label": "About", "icon": "🔮", "link": "about.html" },
+  { "label": "Contact", "icon": "📫", "link": "contact.html" }
+]

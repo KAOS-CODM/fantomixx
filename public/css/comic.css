@@ -1,0 +1,54 @@
+/* css/index.css */
+#comic-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+  }
+  
+  #comic-list a {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+  }
+  
+  #comic-list a:hover {
+    transform: scale(1.03);
+  }
+  
+  #comic-list img {
+    width: 100%;
+    height: fit-content;
+    border-radius: 6px;
+    display: block;
+  }
+  
+  #comic-list h3 {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #fff;
+  }
+  
+  #comic-list p {
+    font-size: 14px;
+    color: #ccc;
+  }
+  @media (max-width: 600px) {
+    #comic-list {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 10px 0;
+    }
+  
+    #comic-list h3 {
+      font-size: 16px;
+      margin-top: 8px;
+      text-align: center;
+    }
+  
+    #comic-list p {
+      font-size: 13px;
+      text-align: center;
+    }
+  }
+  

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>404 - Page Not Found</title>
+        <style>
+            *{
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body{
+                font-family: 'Segoe UI', sans-serif;
+                height: 100vh;
+                background: linear-gradient(-45deg, #1f1c2c, #928dab, #1f1c2c, #434343);
+                animation: gradientBG 15s ease infinite;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            @keyframes gradientBG{
+                0%{background-position: 0% 50%;}
+                50%{background-position: 100% 50%;}
+                100%{background-position: 0% 50%;}
+            }
+
+            h1{
+                font-size: 8rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+            }
+
+            p{
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+                max-width: 500px;
+            }
+
+            .btn-home{
+                background: transparent;
+                color: white;
+                border: 2px solid #00ffff;
+                padding: 0.8rem 1.5rem;
+                border-radius: 8px;
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-home:hover{
+                background-color: #00ffff;
+                color: #1f1f1f;
+                box-shadow: 0 0 10px #00ffff99;
+            }
+
+            @media(max-width: 600px){
+                h1{
+                    font-size: 4.5rem;
+                }
+
+                p{
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="brand-logo">Fantomixx</div>
+
+        <h1>404</h1>
+        <p>Oops! Looks like this page wandered off into the multiverse.<br/>
+            But don't worry, you can find your way back to the comics' home.
+        </p>
+
+        <a href="index.html" class="btn-home">🏠 Return Home</a>
+    </body>
+</html>
