@@ -1,7 +1,5 @@
-/* Import font */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-/* ========== Global Reset & Base ========== */
 * {
   margin: 0;
   padding: 0;
@@ -19,7 +17,6 @@ body {
   background-attachment: fixed;
 }
 
-/* ========== Typography ========== */
 h1, h2, h3, h4, h5 {
   text-align: center;
   margin-bottom: 20px;
@@ -39,7 +36,6 @@ a:hover {
   text-shadow: 0 0 8px #00ccff88;
 }
 
-/* ========== Media & Form Basics ========== */
 img {
   max-width: 100%;
   height: auto;
@@ -51,7 +47,6 @@ button, input {
   outline: none;
 }
 
-/* ========== Logo ========== */
 .logo {
   font-size: 2.5rem;
   color: #fff;
@@ -69,7 +64,6 @@ button, input {
   animation: pulseGlow 1.5s ease-in-out infinite, rotateHue 5s linear infinite;
 }
 
-/* ========== Search Bar ========== */
 .search-container {
   display: flex;
   justify-content: center;
@@ -161,7 +155,6 @@ button, input {
   animation: spin 1s linear infinite;
 }
 
-/* General Navigation Style */
 .mystic-nav {
   background: linear-gradient(145deg, #0a0a0f, #121220);
   box-shadow: 0 0 20px #5f00ff44;
@@ -171,7 +164,6 @@ button, input {
   z-index: 1000;
 }
 
-/* Logo */
 .mystic-nav .nav-logo {
   float: left;
   font-size: 1.5em;
@@ -181,7 +173,6 @@ button, input {
   text-shadow: 0 0 8px #9900ff;
 }
 
-/* Navigation Links */
 .nav-links {
   list-style: none;
   margin: 0;
@@ -215,7 +206,6 @@ button, input {
   box-shadow: 0 0 12px #a366ff;
 }
 
-/* Dropdown */
 .dropdown:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
@@ -258,6 +248,36 @@ button, input {
 }
 
 
+.page-wrapper{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hero, .featured-comics, #reader-container, #comic-details, #comic-list{
+  flex: 1;
+}
+
+.footer{
+  background: #111;
+  color: #eee;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  border-top: 2px solid #333;
+}
+
+.footer-link{
+  color: #55b9f3;
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+.footer-link:hover{
+  text-decoration: underline;
+}
+
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -265,7 +285,6 @@ button, input {
 }
 
 
-/* ========== Animations ========== */
 @keyframes pulseContainer {
   0%, 100% {
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
@@ -341,5 +360,52 @@ button, input {
     width: 100%;
     font-size: 0.95em;
     padding: 10px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  h1, h2, h3, h4, h5 {
+    font-size: 1.5rem;
+  }
+
+  .logo {
+    font-size: 2.2rem;
+  }
+
+  .search-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+
+  .search-input {
+    width: 70%;
+    font-size: 1em;
+  }
+
+  .search-button {
+    width: auto;
+    padding: 10px 20px;
+  }
+
+  .nav-links {
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    font-size: 0.95rem;
+    padding: 0.6em 0.9em;
+  }
+}
+
+@media (min-width: 1025px) {
+  .nav-links a {
+    font-size: 1rem;
+  }
+
+  .logo {
+    font-size: 2.8rem;
   }
 }

@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to Fantomixx</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/chapter.css">
-  <link rel="icon" href="images/logo.webp">
-  <link rel="stylesheet" href="css/welcome.css" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Welcome to Fantomixx</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/chapter.css">
+    <link rel="icon" href="images/logo.webp">
+    <link rel="stylesheet" href="css/welcome.css" />
+  </head>
 <header>
-    <h1 class="logo">Fantomixx</h1>
-    <nav class="mystic-nav" id="dynamic-nav"></nav>
-    <search-bar></search-bar>
-  </header>
+  <h1 class="logo">Fantomixx</h1>
+  <nav class="mystic-nav" id="dynamic-nav"></nav>
+  
+</header>
 <body>
 
-  <div class="hero">
-    <div class="overlay">
-      <h1 class="title">Welcome to Fantomixx</h1>
-      <p class="subtitle">Explore magical worlds, epic adventures, and ancient legends</p>
-      <a href="comic.html" class="enter-btn">Enter the Library</a>
+  <div class="page-wrapper">
+    <div class="hero">
+      <div class="overlay"> 
+        <h1 class="title">Welcome to Fantomixx</h1>
+        <p class="subtitle">Explore magical worlds, epic adventures, and ancient legends</p>
+        <a href="/comic" class="enter-btn">Enter the Library</a>
+      </div>
     </div>
-  </div>
+    
+    <search-bar></search-bar>
+    <section class="featured-comics">
+      <h2>🔥 Hot Comics</h2>
+      <div id="updates-container" class="updates-grid">
+        <p>Loading hot picks...</p>
+      </div>
+    </section>
 
-  <section class="featured-comics">
-    <h2>🔥 Hot Comics</h2>
-    <div id="updates-container" class="updates-grid">
-      <p>Loading hot picks...</p>
+    <div id="spinner" style="display:none;">
+      <div class="spinner"></div>
     </div>
-  </section>
-  <div id="spinner" style="display:none;">
-    <div class="spinner"></div>
+  
+    <div id="dynamic-footer"></div>
   </div>
+  
+
+
 
   <script src="js/config.js"></script>
   <script src="js/welcome.js"></script>
   <script src="js/search-bar.js" defer></script>
-  <script src="js/logo.js" defer></script>
   <script src="js/nav.js" defer></script>
+  <script src="js/footer.js" defer></script>
 </body>
 </html>

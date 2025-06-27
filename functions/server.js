@@ -15,6 +15,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, '../public')));
+app.use((req, res, next) => {
+  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+  const pathname  = parsedUrl.pathname;
+
+  if(!path.extname(pathname)){
+    const htmlPath = path.join(__dirname, '../public', `${pathname}.html`);
+    if(fs.existsSync(htmlPath)){
+      return res.sendFile(htmlPath);
+    }
+  }
+  next();
+})
 app.use(cors());
 
 
@@ -106,6 +118,18 @@ app.get('/api/nav', (req, res) => {
     res.send(data);
   });
 });
+
+app.get('/api/footer', (req,res) => {
+  const filePath = path.join(__dirname, 'data', 'footer.json');
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading footer.json:', err);
+      return res.status(500).json({ error: 'Failed to load footer.' });
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(data);
+  });
+})
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/404.html'));

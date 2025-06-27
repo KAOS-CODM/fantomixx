@@ -5,4 +5,5 @@ functions/node_modules
 functions/upload.js
 functions/test_fetch.js
 functions/db
+functions/logs
 extraction

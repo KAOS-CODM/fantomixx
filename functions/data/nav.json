@@ -1,14 +1,14 @@
 [
-  { "label": "Home", "icon": "🏠", "link": "index.html" },
+  { "label": "Home", "icon": "🏠", "link": "/index" },
   {
     "label": "Comics",
     "icon": "📚",
     "dropdown": [
-      { "label": "All Comics", "link": "comic.html" },
-      { "label": "Genres", "link": "genres.html" },
-      { "label": "Latest Releases", "link": "latest.html" }
+      { "label": "All Comics", "link": "/comic" },
+      { "label": "Genres", "link": "/genres" },
+      { "label": "Latest Releases", "link": "/latest" }
     ]
   },
-  { "label": "About", "icon": "🔮", "link": "about.html" },
-  { "label": "Contact", "icon": "📫", "link": "contact.html" }
+  { "label": "About", "icon": "🔮", "link": "/about" },
+  { "label": "Contact", "icon": "📫", "link": "/contact" }
 ]

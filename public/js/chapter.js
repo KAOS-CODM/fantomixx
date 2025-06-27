@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Show spinner
   spinner.style.display = "block";
 
   fetch(`${API_BASE_URL}/comics/${comicId}`)
@@ -26,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const container = document.createElement("div");
       container.innerHTML = `
+        <a href="/comic" class="back-link">⬅ Back to comics page</a>
         <h2>${comic.title}</h2>
         <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}" />
         <p><strong>Author:</strong> ${comic.author}</p>
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       comic.chapters.forEach(chapter => {
         const thumb = chapter.images?.[0] || `${comic.title}`;
         const card = document.createElement("a");
-        card.href = `read.html?comic=${comic.id}&chapter=${chapter.id}`;
+        card.href = `/read?comic=${comic.id}&chapter=${chapter.id}`;
         card.classList.add("chapter-card-link");
         card.setAttribute("data-chapter", chapter.id.toString().toLowerCase());
         card.style.display = "flex";
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chapterList.appendChild(card);
       });
 
-      // Hide spinner after loading
+
       spinner.style.display = "none";
     })
     .catch(err => {

@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Fantomixx comics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/comic.css">
-  <link rel="icon" href="images/logo.webp">
-</head>
-<header>
-  <h1 class="logo">Fantomixx</h1>
-  <nav class="mystic-nav" id="dynamic-nav"></nav>
-  <search-bar></search-bar>
-</header>
-<body>
-  
-  <div id="comic-list"></div>
-  <div id="spinner" style="display:none;">
-    <div class="spinner"></div>
-  </div>
-  <script src="js/config.js"></script>
-  <script src="js/comic.js"></script>
-  <script src="js/search-bar.js" defer></script>
-  <script src="js/logo.js" defer></script>
-  <script src="js/nav.js" defer></script>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <title>Fantomixx - Comics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/comic.css">
+    <link rel="icon" href="images/logo.webp">
+  </head>
+  <header>
+    <h1 class="logo">Fantomixx</h1>
+    <nav class="mystic-nav" id="dynamic-nav"></nav>
+    <search-bar></search-bar>
+  </header>
+  <body>
+    <div class="page-wrapper">
+      <div id="comic-list"></div>
+      <div id="spinner" style="display:none;">
+        <div class="spinner"></div>
+      </div>
+
+      <div id="dynamic-footer"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/comic.js"></script>
+    <script src="js/search-bar.js" defer></script>
+    <script src="js/nav.js" defer></script>
+    <script src="js/footer.js" defer></script>
+  </body>
 </html>

@@ -8,17 +8,17 @@ class SearchBar extends HTMLElement {
         </div>
       `;
     }
-  
+
     connectedCallback() {
       const input = this.querySelector("#site-search-input");
       const button = this.querySelector("#site-search-btn");
-  
+
       const isComic = window.location.pathname.includes("comic");
       const isChapter = window.location.pathname.includes("chapter");
-  
+
       const filter = () => {
         const query = input.value.trim().toLowerCase();
-  
+
         if (isComic) {
           const cards = document.querySelectorAll(".comic-card-link");
           cards.forEach(card => {
@@ -28,7 +28,7 @@ class SearchBar extends HTMLElement {
             card.style.display = match || query === "" ? "block" : "none";
           });
         }
-  
+
         if (isChapter) {
           const chapters = document.querySelectorAll(".chapter-card-link");
           chapters.forEach(card => {
@@ -38,11 +38,10 @@ class SearchBar extends HTMLElement {
           });
         }
       };
-  
+
       input.addEventListener("input", filter);
       button.addEventListener("click", filter);
     }
   }
-  
+
   customElements.define("search-bar", SearchBar);
-  

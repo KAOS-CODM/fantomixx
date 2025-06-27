@@ -1,6 +1,6 @@
 [
   {
-    "id": "Nano Machine",
+    "id": "nano_machine",
     "title": "Nano Machine",
     "description": "After being held in disdain and having his life put in danger, an orphan from the Demonic Cult, Cheon Yeo-Woon, has an unexpected visit from his descendant from the future who inserts a nanomachine into Cheon Yeo-Woon’s body, which drastically changes Cheon Yeo-Woon’s life after its activation. The story of Cheon Yeo-Woon’s journey of bypassing the Demonic Cult and rising to become the best martial artist has just begun. Alternative Names: Nano Mashin / 喇勞 魔神 / 奈米魔神 / 나노마신",
     "shortdescription": "Watch as an orphan moves from zero to hero ny using AI from the future.",
@@ -13,7 +13,6 @@
     "chapters": [
       {
         "id": "1",
-        "order":"1",
         "images": [
           "comics/nano machine/ch1/001.jpg",
           "comics/nano machine/ch1/002__001.jpg",
@@ -67,7 +66,6 @@
       },
       {
         "id": "2",
-        "order":"2",
         "images": [
           "comics/nano machine/ch2/001.jpg",
           "comics/nano machine/ch2/002__001.jpg",
@@ -104,7 +102,6 @@
       },
       {
         "id": "3",
-        "order":"3",
         "images": [
           "comics/nano machine/ch3/001.jpg",
           "comics/nano machine/ch3/002__001.jpg",
@@ -149,7 +146,6 @@
       },
       {
         "id": "4",
-        "order":"4",
         "images": [
           "comics/nano machine/ch4/001.jpg",
           "comics/nano machine/ch4/002__001.jpg",
@@ -179,12 +175,11 @@
           "comics/nano machine/ch4/008__002.jpg",
           "comics/nano machine/ch4/008__003.jpg",
           "comics/nano machine/ch4/008__004.jpg",
-          "comics/nano machine/ch5/009.jpg"
+          "comics/nano machine/ch4/009.jpg"
         ]
       },
       {
         "id": "5",
-        "order":"5",
         "images": [
           "comics/nano machine/ch5/001.jpg",
           "comics/nano machine/ch5/002__001.jpg",
@@ -232,7 +227,7 @@
     ]
   },
   {
-    "id": "Greatest Boss System",
+    "id": "greatest_boss_system",
     "title": "Greatest Boss System",
     "description": "What is a Villain and what is a Boss? Maybe he’s the fearless ruler of the world. Or maybe the worst enemy of humanity, who tears worlds down. After Su Xin was killed and wished in his last moment, to rather than dying while saving someone only to be condemned while failing, to become a Great Villain. And as if by a miraculous chance was his last wish heard and he was granted the Greatest Boss System after being reincarnated. With this System Su Xin gained now the ability, to earn all kinds of Martial Arts and Cultivations of Villainous BOSS characters from his previous Worlds Wuxia(Martial Hero) stories. “My name is Su Xin, and I am a man of my word.",
     "shortdescription": "Watch as Su Xin blur the lines between villainy and heroism in this manhwa.",
@@ -245,7 +240,6 @@
     "chapters": [
       {
         "id": "1",
-        "order":"1",
         "images": [
           "comics/Greatest Boss System/ch1/001__001.jpg",
           "comics/Greatest Boss System/ch1/001__002.jpg",
@@ -275,7 +269,6 @@
         ]
       },{
         "id": "2",
-        "order":"2",
         "images": [
           "comics/Greatest Boss System/ch2/001__001.jpg",
           "comics/Greatest Boss System/ch2/001__002.jpg",

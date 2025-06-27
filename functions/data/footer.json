@@ -1,0 +1,9 @@
+{
+    "text": "&copy; 2025 Kaos Koncept Digitals. All rights reserved. <p> FANTOMIXX </p>",
+    "links": [
+        {"label": "Home", "href": "/index"},
+        {"label": "Comics", "href": "/comics"},
+        {"label": "About", "href": "/about"},
+        {"label": "Contact", "href": "/contact"}
+    ]
+}
