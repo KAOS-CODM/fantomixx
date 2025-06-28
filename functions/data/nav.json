@@ -10,5 +10,7 @@
     ]
   },
   { "label": "About", "icon": "🔮", "link": "/about" },
-  { "label": "Contact", "icon": "📫", "link": "/contact" }
+  { "label": "Contact", "icon": "📫", "link": "/contact" },
+  { "label": "Recommend", "icon": "", "link": "/recommend" },
+  {"label": "Login/Signup", "icon":"", "link": "/account"}
 ]

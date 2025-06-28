@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     })
     .catch(err => {
+        console.error("Failed to load comics", err);
         list.innerHTML = "<p>Error loading comics.</p>";
-        console.error(err);
     });
 });

@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch(`${API_BASE_URL}/nav`)
     .then(res => res.json())
     .then(navItems => {
-      const logo = `<div class="nav-logo">🧿 FANTOMIXX</div>`;
       let linksHTML = '<ul class="nav-links">';
 
       navItems.forEach(item => {
@@ -23,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       linksHTML += '</ul>';
-      navContainer.innerHTML = logo + linksHTML;
+      navContainer.innerHTML = linksHTML;
     })
     .catch(err => {
       console.error("Failed to load nav.json", err);

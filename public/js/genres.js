@@ -14,12 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.setAttribute("data-genre", genre.toLowerCase());
 
-
         container.appendChild(card);
       });
     })
     .catch(err => {
+      console.error("Failed to load genres", err);
       container.innerHTML = "<p>Failed to load genres.</p>";
-      console.error(err);
     });
 });
