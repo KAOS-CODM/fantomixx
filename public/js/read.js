@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     header.className = "reader-header";
     header.innerHTML = `
       <h2>${comic.title} - Chapter ${chapter.id}</h2>
-      <a href="/comic?id=${comic.id}" class="back-link">⬅ Back to ${comic.title}</a>
+      <a href="/chapter?id=${comic.id}" class="back-link">⬅ Back to ${comic.title}</a>
     `;
 
     readerContainer.appendChild(header);
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       imageElement.style.display = "block";
       imageElement.className = "chapter-image";
       imageElement.onerror = () => {
-        imageElement.src = "assets/missing-page.jpg";
+        imageElement.src = "../assets/missing-page.jpg";
         hideSpinnerIfAllLoaded();
       };
 

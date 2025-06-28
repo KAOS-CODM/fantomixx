@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p><strong>Status:</strong> ${comic.status}</p>
         <p><strong>Source:</strong> ${comic.source}</p>
         <h3>Chapters (${comic.chapters.length})</h3>
-        <div id="chapter-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <div id="chapter-list"></div>
       `;
       comicDetails.appendChild(container);
 
@@ -65,10 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
         card.innerHTML = `
           <img src="${thumb}" onerror="this.src='assets/default-thumb.jpg'" />
           <div>
-            <div><strong>Chapter ${chapter.id.toString().padStart(3, '0')}</strong></div>
+            <div>${chapter.id.toString().padStart(3, '0')}</div>
             ${lastReadHTML}
           </div>
         `;
+        
 
         chapterList.appendChild(card);
       });

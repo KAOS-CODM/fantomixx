@@ -1,14 +1,9 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #0a0a0a;
-  color: #eee;
-}
-
 .hero {
   position: relative;
-  height: 500px;
-  background: url('../assets/mystic-bg.jpg') center/cover no-repeat;
+  height: fit-content;
+  min-height: 100vh;
+  overflow: hidden;
+  background: url('../assets/th.jpeg') center/cover no-repeat;
 }
 
 .overlay {
@@ -53,7 +48,6 @@ body {
   box-shadow: 0 0 25px #ff00ff;
 }
 
-/* Latest Updates */
 .latest-updates {
   padding: 2rem 1rem;
   background-color: #111;
@@ -95,7 +89,6 @@ body {
   color: #ccc;
 }
 
-/* RESPONSIVE STYLES */
 @media (max-width: 768px) {
   .title {
     font-size: 2.2rem;
@@ -112,7 +105,7 @@ body {
   }
 
   .update-card {
-    max-width: 90%;
+    max-width: 48%;
   }
 }
 
@@ -133,10 +126,10 @@ body {
   .updates-grid {
     flex-direction: column;
     align-items: center;
+    gap: 0.8rem;
   }
 
   .update-card {
-    width: 100%;
-    max-width: 95%;
+    max-width: 90%;
   }
 }

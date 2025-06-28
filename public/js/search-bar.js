@@ -15,6 +15,7 @@ class SearchBar extends HTMLElement {
 
       const isComic = window.location.pathname.includes("comic");
       const isChapter = window.location.pathname.includes("chapter");
+      const isGenre = window.location.pathname.includes("genre");
 
       const filter = () => {
         const query = input.value.trim().toLowerCase();
@@ -37,6 +38,17 @@ class SearchBar extends HTMLElement {
             card.style.display = match || query === "" ? "block" : "none";
           });
         }
+
+        if (isGenre) {
+          const cards = document.querySelectorAll(".genre-card");
+          cards.forEach(card => {
+            const title = card.getAttribute("data-title")?.toLowerCase() || "";
+            const genre = card.getAttribute("data-genre")?.toLowerCase() || "";
+            const match = title.includes(query) || genre.includes(query);
+            card.style.display = match || query === "" ? "block" : "none";
+          });
+}
+
       };
 
       input.addEventListener("input", filter);

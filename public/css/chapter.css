@@ -1,4 +1,3 @@
-/* css/comic.css */
 #comic-details {
     max-width: 900px;
     margin: auto;
@@ -31,14 +30,16 @@
     font-size: 22px;
     color: #fff;
   }
-  
+
   #chapter-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    width: auto;
+    box-sizing: border-box;
   }
-  
+
   #chapter-list a {
     text-decoration: none;
     color: inherit;

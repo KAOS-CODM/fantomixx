@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch(`${API_BASE_URL}/comics`)
     .then(res => res.json())
     .then(comics => {
+
       comics.forEach(comic => {
         const card = document.createElement("a");
         card.href = `/chapter?id=${comic.id}`;
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3 class="comic-title">${comic.title}</h3>
           </div>
         `;
+
         comicList.appendChild(card);
       });
 

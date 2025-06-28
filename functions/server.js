@@ -107,6 +107,30 @@ app.get('/api/comics/:id', async (req, res) => {
   }
 });
 
+app.get('/api/genres', async (req, res) => {
+  const { data, error } = await supabase
+  .from('comics')
+  .select('*');
+
+  if (error){
+    console.error('Error fetching comics:', error);
+    return res.status(500).json({error: 'Failed to fetch comics'});
+  }
+
+  const genreMap = {};
+
+  for (const comic of data){
+    const genres = (comic.genre || '').split(',').map(g => g.trim()).filter(Boolean);
+
+    for (const genre of genres){
+      if(!genreMap[genre]) genreMap[genre] = [];
+      genreMap[genre].push(comic);
+    }
+  }
+
+  res.json(genreMap);
+});
+
 app.get('/api/nav', (req, res) => {
   const filePath = path.join(__dirname, 'data', 'nav.json');
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -118,6 +142,7 @@ app.get('/api/nav', (req, res) => {
     res.send(data);
   });
 });
+
 
 app.get('/api/footer', (req,res) => {
   const filePath = path.join(__dirname, 'data', 'footer.json');
