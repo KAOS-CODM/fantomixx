@@ -33,7 +33,13 @@
 
   #chapter-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    place-items: center;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
     gap: 1rem;
     padding: 1rem;
     width: auto;
@@ -49,21 +55,49 @@
   #chapter-list a:hover {
     transform: scale(1.02);
   }
+
+  .chapter-grid{
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    gap: 0.5rem;
+  }
   
-  #chapter-list img {
+  .chapter-grid img {
     width: 100%;
     height: fit-content;
+    object-fit: cover;
     border-radius: 6px;
-    display: block;
   }
   
-  #chapter-list div {
+  .chapter-grid {
+    color: white;
+    font-size: 1rem;
     background: #222;
-    padding: 10px;
-    border-radius: 0 0 6px 6px;
-    text-align: center;
-    color: #eee;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
   }
+
+  .chapter-number {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: white;
+    background: #222;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .chapter-id{
+    font-weight: bold;
+  }
+
+  .last-read{
+    font-size: 0.9rem;
+    color: #aaffaa;
+  }
+
   @media (min-width: 601px) and (max-width: 1024px) {
   #comic-details {
     padding: 18px;
@@ -95,9 +129,28 @@
     padding: 15px 0;
   }
 
-  #chapter-list div {
-    font-size: 15px;
+  .chapter-grid div {
+    font-size: 0.9rem;
     padding: 9px;
+  }
+
+  .chapter-grid{
+    grid-template-rows: auto auto;
+    gap: 0.4rem;
+  }
+
+  .chapter-number {
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .chapter-id{
+    font-weight: 0.9rem;
+  }
+
+  .last-read{
+    font-size: 0.8rem;
   }
 }
 

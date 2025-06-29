@@ -59,17 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let lastReadHTML = "";
         if (progress && progress.chapterId === chapter.id) {
-          lastReadHTML = `<div style="color: lightgreen; font-size: 0.9em;">Last read</div>`;
+          lastReadHTML = `<div style="color: lightgreen; font-size: 0.9em;">Resume</div>`;
         }
 
         card.innerHTML = `
+        <div class="chapter-grid">
           <img src="${thumb}" onerror="this.src='assets/default-thumb.jpg'" />
-          <div>
-            <div>${chapter.id.toString().padStart(3, '0')}</div>
-            ${lastReadHTML}
+          <div class="chapter-number">
+            <span class="chapter-id">${chapter.id.toString().padStart(3, '0')}</span>
+            <span class="last-read">${lastReadHTML}</span>
           </div>
+        </div>
         `;
-        
 
         chapterList.appendChild(card);
       });
