@@ -6,4 +6,6 @@ functions/upload.js
 functions/test_fetch.js
 functions/db
 functions/logs
+functions/data/excess.json
+functions/data/comics.json
 extraction
