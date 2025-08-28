@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import AdmZip from 'adm-zip';
 import { fileURLToPath } from 'url';
 
 dotenv.config();
@@ -29,11 +30,13 @@ app.use((req, res, next) => {
 })
 app.use(cors());
 
-
 const supabaseUrl = process.env.DB_URL;
 const supabaseKey = process.env.DB_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// ============ API ROUTES ============
+
+// All comics
 app.get('/api/comics', async (req, res) => {
   const { data, error } = await supabase
     .from('comics')
@@ -47,11 +50,12 @@ app.get('/api/comics', async (req, res) => {
   res.json(data);
 });
 
-
+// Single comic + chapters
 app.get('/api/comics/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Fetch comic
     const { data: comic, error: comicError } = await supabase
       .from('comics')
       .select('*')
@@ -60,6 +64,7 @@ app.get('/api/comics/:id', async (req, res) => {
 
     if (comicError) return res.status(404).json({ error: 'Comic not found' });
 
+    // Fetch chapters
     const { data: chapters, error: chapterError } = await supabase
       .from('chapters')
       .select('*')
@@ -68,18 +73,17 @@ app.get('/api/comics/:id', async (req, res) => {
 
     if (chapterError) return res.status(500).json({ error: chapterError.message });
 
-    const chapterIds = chapters.map(ch => ch.id);
+    // Fetch images for fallback (if CBZ is missing)
     let images = [];
-
+    const chapterIds = chapters.map(ch => ch.id);
     if (chapterIds.length > 0) {
       const { data: imgData, error: imgError } = await supabase
-      .from('chapter_images')
-      .select('*')
-      .eq('comic_id', id)
-      .in('chapter_id', chapterIds);
+        .from('chapter_images')
+        .select('*')
+        .eq('comic_id', id)
+        .in('chapter_id', chapterIds);
 
       if (imgError) return res.status(500).json({ error: imgError.message });
-
       images = imgData;
     }
 
@@ -89,12 +93,18 @@ app.get('/api/comics/:id', async (req, res) => {
       imagesByChapter[img.chapter_id].push(img);
     }
 
-    const chaptersWithImages = chapters.map(chapter => ({
-      ...chapter,
-      images: (imagesByChapter[chapter.id] || [])
+    // Prepare chapters for frontend
+    const chaptersWithImages = chapters.map(chapter => {
+      // ✅ Pass CBZ URL directly to frontend if it exists
+      if (chapter.cbz_url) return { ...chapter, cbz: chapter.cbz_url };
+
+      // Fallback to individual images
+      const imgs = (imagesByChapter[chapter.id] || [])
         .sort((a, b) => a.page_number - b.page_number)
-        .map(img => img.image_url.startsWith("http") ? img.image_url : `/uploads/${img.image_url}`)
-    }));
+        .map(img => img.image_url.startsWith('http') ? img.image_url : `/uploads/${img.image_url}`);
+
+      return { ...chapter, images: imgs };
+    });
 
     return res.json({
       ...comic,
@@ -107,6 +117,7 @@ app.get('/api/comics/:id', async (req, res) => {
   }
 });
 
+// Genres
 app.get('/api/genres', async (req, res) => {
   const { data, error } = await supabase
   .from('comics')
@@ -118,19 +129,17 @@ app.get('/api/genres', async (req, res) => {
   }
 
   const genreMap = {};
-
   for (const comic of data){
     const genres = (comic.genre || '').split(',').map(g => g.trim()).filter(Boolean);
-
     for (const genre of genres){
       if(!genreMap[genre]) genreMap[genre] = [];
       genreMap[genre].push(comic);
     }
   }
-
   res.json(genreMap);
 });
 
+// Nav
 app.get('/api/nav', (req, res) => {
   const filePath = path.join(__dirname, 'data', 'nav.json');
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -143,7 +152,7 @@ app.get('/api/nav', (req, res) => {
   });
 });
 
-
+// Footer
 app.get('/api/footer', (req,res) => {
   const filePath = path.join(__dirname, 'data', 'footer.json');
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -156,6 +165,7 @@ app.get('/api/footer', (req,res) => {
   });
 })
 
+// 404
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, '../public/404.html'));
 });

@@ -42,7 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const chapterList = container.querySelector("#chapter-list");
 
       comic.chapters.forEach(chapter => {
-        const thumb = chapter.images?.[0] || `${comic.title}`;
+        let thumb;
+        if (chapter.cbz) {
+          thumb = comic.cover;
+        } else {
+          thumb = chapter.images?.[0] || "assets/default-thumb.jpg";
+        }
         const card = document.createElement("a");
         card.href = `/read?comic=${comic.id}&chapter=${chapter.id}`;
         card.classList.add("chapter-card-link");

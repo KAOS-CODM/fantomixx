@@ -1,4 +1,63 @@
-[
+[  
+  {
+    "id": "fff_class_trashero",
+    "title": "FFF-Class Trashero",
+    "description": "Hansoo Kang was an average boy living in the normal world when he was suddenly summoned to Fantasia, a fantasy world run by demons. Deemed the Chosen Hero, he's spent the last ten years building himself up to defeat the lord of Fantasia—which turned out to be a piece of cake. As he eagerly awaits his return to the real world, the god of Fantasia appears and throws a wrench in his plan: a report card that reveals there's more to being a hero than just might.",
+    "shortdescription": "Watch as Hansoo Kang is summoned on a journey of a lifetime to assume a role of a hero in a foreign world.",
+    "author": "kkangmu (깡무)",
+    "penciller": "kkangmu (깡무)",
+    "genre": "Action, Adventure, Comedy, Demons, Drama, Fantasy, Isekai, Magic, Reincarnation, Webtoons, Shounen, Manhwa, Parody, Harem, Anti-Hero, Revenge, Male Protagonist, Full Color, Time Manipulation, Meta, Slavery, Elf, Antihero / Antiheroine, Cunning Protagonist, Fantasy World, Greedy Protagonist, Level System, Time Travel, Transported to Another World, Villain Protagonist, Based on a Novel, Age Regression",
+    "source": "Tappytoon",
+    "status": "Completed",
+    "cover": "comics/FFF-Class Trashero/cover.png",
+    "chapters": [
+      {
+        "id": "1",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 1.cbz"
+      },
+      {
+        "id": "2",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 2.cbz"        
+      },
+      {
+        "id": "3",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 3.cbz"
+      },
+      {
+        "id": "4",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 4.cbz"
+      },
+      {
+        "id": "5",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 5.cbz"
+      },
+      {
+        "id": "6",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 6.cbz"
+      },
+      {
+        "id": "7",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 7.cbz"
+      },
+      {
+        "id": "8",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 8.cbz"
+      },
+      {
+        "id": "9",
+        "images": [],
+        "cbz": "comics/FFF-Class Trashero/Chapter 9.cbz"
+      }
+    ]
+  },
   {
     "id": "nano_machine",
     "title": "Nano Machine",
@@ -13,9 +72,57 @@
     "chapters": [
       {
         "id": "1",
-        "images": [
-          
-        ]
+        "images": [],
+        "cbz": "comics/nano machine/ch1.cbz"
+      },
+      {
+        "id": "2",
+        "images": [],
+        "cbz": "comics/nano machine/ch2.cbz"
+      },
+      {
+        "id": "3",
+        "images": [],
+        "cbz": "comics/nano machine/ch3.cbz"
+      },
+      {
+        "id": "4",
+        "images": [],
+        "cbz": "comics/nano machine/ch4.cbz"
+      },
+      {
+        "id": "5",
+        "images": [],
+        "cbz": "comics/nano machine/ch5.cbz"
+      }
+    ]
+  },
+  {
+    "id": "greatest_boss_system",
+    "title": "Greatest Boss System",
+    "description": "What is a Villain and what is a Boss? Maybe he’s the fearless ruler of the world. Or maybe the worst enemy of humanity, who tears worlds down. After Su Xin was killed and wished in his last moment, to rather than dying while saving someone only to be condemned while failing, to become a Great Villain. And as if by a miraculous chance was his last wish heard and he was granted the Greatest Boss System after being reincarnated. With this System Su Xin gained now the ability, to earn all kinds of Martial Arts and Cultivations of Villainous BOSS characters from his previous Worlds Wuxia(Martial Hero) stories. “My name is Su Xin, and I am a man of my word.",
+    "shortdescription": "Watch as Su Xin blur the lines between villainy and heroism in this manhwa.",
+    "author": "漫哆啦文化, 封七月, 延强动漫",
+    "penciller": "肉山, 沁米粒, 沁明",
+    "genre": "Web Comic, Action, Adventure, Fantasy, Historical, Isekai, Wuxia, Martial Arts, Reincarnation, Chinese",
+    "source": "MangaDex",
+    "status": "Ongoing",
+    "cover": "comics/Greatest Boss System/cover.png",
+    "chapters": [
+      {
+        "id": "1",
+        "images": [],
+        "cbz": "comics/Greatest Boss System/ch1.cbz"
+      },
+      {
+        "id": "2",
+        "images": [],
+        "cbz": "comics/Greatest Boss System/ch2.cbz"
+      },
+      {
+        "id": "3",
+        "images": [],
+        "cbz": "comics/Greatest Boss System/ch3.cbz"
       }
     ]
   }
