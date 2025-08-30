@@ -1,3 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;600&display=swap');
+
+/* Use Orbitron for headings / logo (already done) */
+/* Apply Rajdhani (or Exo 2 / Roboto Condensed) for metadata */
+
+.metadata {
+  font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  color: #b0e0ff;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.metadata strong {
+  color: #00ffff;
+  font-weight: 600;
+}
+
 #comic-details {
     background: url('../assets/IMG_0246.JPG') center/cover no-repeat;
     max-width: 900px;

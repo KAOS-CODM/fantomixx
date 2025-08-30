@@ -79,12 +79,16 @@
   box-sizing: border-box;
 }
 
-.update-card h3 {
-  margin: 0 0 0.5rem;
-  color: #f0caff;
+.update-card img {
+  width: 100%;
+  height: fit-content;
+  aspect-ratio: 2 / 3;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
-.update-card p {
+.update-card h3 {
+  margin: 0 0 0.5rem;
   font-size: 0.9rem;
   color: #ccc;
 }

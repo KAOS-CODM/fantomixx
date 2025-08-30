@@ -91,20 +91,65 @@ document.addEventListener("DOMContentLoaded", () => {
       let imageElements = [];
 
       if (chapter.cbz) {
-        // 📦 CBZ MODE
-        fetch(chapter.cbz)
-          .then(res => res.arrayBuffer())
-          .then(async (arrayBuffer) => {
+        // 📦 CBZ MODE (Hybrid Sorting with Natural Order)
+        (async () => {
+          try {
+            console.log("Fetching CBZ for chapter:", chapter.cbz);
+
+            const res = await fetch(chapter.cbz);
+            if (!res.ok) throw new Error(`Failed to fetch CBZ: ${res.status}`);
+
+            const arrayBuffer = await res.arrayBuffer();
             const zip = await JSZip.loadAsync(arrayBuffer);
-            const entries = Object.values(zip.files)
-            .filter(f => !f.dir && /\.(png|jpe?g|gif)$/i.test(f.name))
-            .sort((a, b) => {
-              // numeric sort based on filename
-              const numA = parseInt(a.name.replace(/\D/g, '')) || 0;
-              const numB = parseInt(b.name.replace(/\D/g, '')) || 0;
-              return numA - numB;
+
+            let entries = [];
+            zip.forEach((relativePath, zipEntry) => {
+              if (!zipEntry.dir && /\.(png|jpe?g|gif)$/i.test(zipEntry.name)) {
+                entries.push(zipEntry);
+              }
             });
 
+            if (!entries.length) {
+              readerContainer.innerHTML += "<p>No images found in CBZ.</p>";
+              if (spinner) spinner.style.display = "none";
+              return;
+            }
+
+            // --- Hybrid sorting logic ---
+            function extractNumber(name) {
+              // extract up to 5 consecutive digits
+              const match = name.match(/(\d{1,5})/);
+              return match ? parseInt(match[0], 10) : null;
+            }
+
+            function isOrdered(arr) {
+              for (let i = 1; i < arr.length; i++) {
+                const prev = extractNumber(arr[i - 1].name);
+                const curr = extractNumber(arr[i].name);
+                if (prev !== null && curr !== null && prev > curr) {
+                  return false;
+                }
+              }
+              return true;
+            }
+
+            if (!isOrdered(entries)) {
+              console.log("Images out of order → applying natural sort...");
+              entries.sort((a, b) => {
+                const numA = extractNumber(a.name);
+                const numB = extractNumber(b.name);
+
+                if (numA !== null && numB !== null) {
+                  return numA - numB;
+                }
+                // fallback for weird filenames (sort alphabetically, numeric aware)
+                return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
+              });
+            } else {
+              console.log("Images already in order → no sort applied.");
+            }
+
+            // --- Render images ---
             const totalImages = entries.length;
             let imagesLoaded = 0;
 
@@ -122,52 +167,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (imagesLoaded === totalImages && spinner) spinner.style.display = "none";
               };
 
+              imageElement.onerror = (e) => {
+                console.error("Failed to load page image from CBZ:", e);
+                imageElement.src = "../assets/missing-page.jpg";
+                imagesLoaded++;
+                if (imagesLoaded === totalImages && spinner) spinner.style.display = "none";
+              };
+
               readerContainer.appendChild(imageElement);
-              imageElements.push(imageElement);
             }
 
             document.dispatchEvent(new Event("chapterLoaded"));
-          })
-          .catch(err => {
+          } catch (err) {
             console.error("Error loading CBZ:", err);
             readerContainer.innerHTML += "<p>Failed to load CBZ.</p>";
             if (spinner) spinner.style.display = "none";
-          });
-
-      } else if (Array.isArray(chapter.images) && chapter.images.length > 0) {
-        // 🖼️ FALLBACK TO NORMAL IMAGES
-        let imagesLoaded = 0;
-        const totalImages = chapter.images.length;
-
-        chapter.images.forEach((imageUrl, index) => {
-          const imageElement = document.createElement("img");
-          imageElement.src = imageUrl;
-          imageElement.alt = `Page ${index + 1}`;
-          imageElement.style.width = "100%";
-          imageElement.style.display = "block";
-          imageElement.className = "chapter-image";
-
-          imageElement.onload = () => {
-            imagesLoaded++;
-            if (imagesLoaded === totalImages && spinner) spinner.style.display = "none";
-          };
-
-          imageElement.onerror = () => {
-            imageElement.src = "../assets/missing-page.jpg";
-            imagesLoaded++;
-            if (imagesLoaded === totalImages && spinner) spinner.style.display = "none";
-          };
-
-          readerContainer.appendChild(imageElement);
-          imageElements.push(imageElement);
-        });
-
-        document.dispatchEvent(new Event("chapterLoaded"));
-      } else {
-        readerContainer.innerHTML += "<p>No images found for this chapter.</p>";
-        if (spinner) spinner.style.display = "none";
+          }
+        })();
       }
-
       const chapterKey = `chapter-${chapter.id}`; // fixed: use actual chapter.id
       const scrollKey = `${chapterKey}-scroll`;
       const progressKey = `${chapterKey}-progress`;

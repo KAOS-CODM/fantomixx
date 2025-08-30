@@ -28,12 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
         <a href="/comic" class="back-link">⬅ Back to comics page</a>
         <h2>${comic.title}</h2>
         <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}" />
-        <p><strong>Author:</strong> ${comic.author}</p>
-        <p><strong>Penciller:</strong> ${comic.penciller}</p>
-        <p><strong>Genre:</strong> ${comic.genre}</p>
-        <p>${comic.description}</p>
-        <p><strong>Status:</strong> ${comic.status}</p>
-        <p><strong>Source:</strong> ${comic.source}</p>
+        <div class="metadata">
+          <p><strong>Author:</strong> ${comic.author}</p>
+          <p><strong>Penciller:</strong> ${comic.penciller}</p>
+          <p><strong>Genre:</strong> ${comic.genre}</p>
+          <p>${comic.description}</p>
+          <p><strong>Status:</strong> ${comic.status}</p>
+          <p><strong>Source:</strong> ${comic.source}</p>
+        </div>
         <h3>Chapters (${comic.chapters.length})</h3>
         <div id="chapter-list"></div>
       `;

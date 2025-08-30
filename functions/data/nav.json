@@ -6,11 +6,11 @@
     "dropdown": [
       { "label": "All Comics", "link": "/comic" },
       { "label": "Genres", "link": "/genres" },
-      { "label": "Latest Releases", "link": "/latest" }
+      { "label": "Latest Releases", "link": "/#" }
     ]
   },
-  { "label": "About", "icon": "🔮", "link": "/about" },
-  { "label": "Contact", "icon": "📫", "link": "/contact" },
-  { "label": "Recommend", "icon": "", "link": "/recommend" },
-  {"label": "Login/Signup", "icon":"", "link": "/account"}
+  { "label": "About", "icon": "🔮", "link": "/#" },
+  { "label": "Contact", "icon": "📫", "link": "/#" },
+  { "label": "Recommend", "icon": "", "link": "/#" },
+  {"label": "Login/Signup", "icon":"", "link": "/#"}
 ]

@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const card = document.createElement("div");
           card.className = "update-card";
           card.innerHTML = `
+            <a href="/chapter?id=${comic.id}" style="color:#ffccff;">
+            <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}"></a>
             <h3>${comic.title}</h3>
-            <p>${comic.shortdescription || "A mystical tale unfolds..."}</p>
-            <a href="/chapter?id=${comic.id}" style="color:#ffccff;">Read Now →</a>
           `;
           container.appendChild(card);
         });

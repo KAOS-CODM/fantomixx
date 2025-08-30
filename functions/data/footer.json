@@ -3,7 +3,7 @@
     "links": [
         {"label": "Home", "href": "/index"},
         {"label": "Comics", "href": "/comics"},
-        {"label": "About", "href": "/about"},
-        {"label": "Contact", "href": "/contact"}
+        {"label": "About", "href": "/#"},
+        {"label": "Contact", "href": "/#"}
     ]
 }

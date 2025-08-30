@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Comics Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+    h1 { margin: 0 0 16px; }
+    section { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; }
+    input[type="text"], textarea, select { width: 280px; padding: 8px; border: 1px solid #ccc; border-radius: 8px; }
+    textarea { width: 580px; height: 80px; }
+    #logoutBtn { padding:8px 16px; background:#111; color:#fff; border:none; border-radius:8px; cursor:pointer; margin-bottom:20px; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #888; background: #111; color: #fff; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #eee; padding: 8px; text-align: left; font-size: 14px; }
+    th { background: #fafafa; }
+    .muted { color: #666; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .note { font-size: 12px; color: #333; background: #f5f7ff; border: 1px solid #dfe5ff; padding: 10px; border-radius: 8px; }
+    .success { color: #0b7a0b; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Comics Admin</h1>
+  <button id="logoutBtn">Logout</button>
+
+  <section id="list">
+    <h2>All Comics</h2>
+    <div class="row">
+      <button id="refreshList">Refresh</button>
+      <span id="listMsg" class="muted"></span>
+    </div>
+    <table id="comicsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Author</th>
+          <th>Chapters</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody><!-- filled by JS --></tbody>
+    </table>
+  </section>
+
+  <section id="createUpdateComic">
+    <h2>Create / Update Comic (metadata)</h2>
+
+    <div style="margin-bottom:16px;">
+      <label>Metadata Options:</label><br/>
+      <input id="xmlFile" type="file" accept=".xml" />
+      <button id="uploadXmlBtn">Load XML</button>
+      <button id="downloadXmlTemplate">Download Template</button>
+      <span id="xmlMsg" class="muted"></span>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Comic ID (unique)</label>
+        <input id="c_id" type="text" placeholder="e.g. fff_class_trashero" />
+      </div>
+      <div>
+        <label>Title</label>
+        <input id="c_title" type="text" placeholder="Title" />
+      </div>
+      <div>
+        <label>Status</label>
+        <input id="c_status" type="text" placeholder="Ongoing / Completed" />
+      </div>
+      <div>
+        <label>Author</label>
+        <input id="c_author" type="text" placeholder="Author" />
+      </div>
+      <div>
+        <label>Penciller</label>
+        <input id="c_penciller" type="text" placeholder="Penciller" />
+      </div>
+      <div>
+        <label>Source</label>
+        <input id="c_source" type="text" placeholder="Source" />
+      </div>
+      <div>
+        <label>Genres (comma-separated)</label>
+        <input id="c_genre" type="text" placeholder="Action, Adventure, ..." />
+      </div>
+      <div style="grid-column: 1 / -1">
+        <label>Description</label>
+        <textarea id="c_description" placeholder="Long description"></textarea>
+      </div>
+      <div style="grid-column: 1 / -1">
+        <label>Short Description</label>
+        <textarea id="c_shortdescription" placeholder="Short description"></textarea>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button id="saveComic">Save Metadata</button>
+      <span id="comicMsg" class="muted"></span>
+    </div>
+
+    <div style="margin-top:16px;">
+      <label>Update Cover</label>
+      <input id="coverFile" type="file" accept=".jpg,.jpeg,.png,.webp" />
+      <button id="uploadCoverBtn">Upload Cover</button>
+      <span id="coverMsg" class="muted"></span>
+    </div>
+  </section>
+
+  <section id="uploadChapters">
+    <h2>Batch Upload Chapters (CBZ)</h2>
+    <p class="note">
+      Choose a Comic ID, then select one or more <strong>.cbz</strong> files.  
+      If you don’t pass metadata, the server will try to infer <em>chapterId</em> from filenames (first number found).  
+      Optionally, paste a JSON mapping: <code>{"Chapter 1.cbz":{"chapterId":"1","title":"Prologue"}}</code>
+    </p>
+    <div class="row">
+      <div>
+        <label>Comic ID</label>
+        <input id="u_comic_id" type="text" placeholder="existing comic id" />
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <input id="cbzFiles" type="file" accept=".cbz" multiple />
+    </div>
+    <div style="margin-top:8px;">
+      <label>Optional Chapters Meta (JSON)</label>
+      <textarea id="chaptersMeta" placeholder='{"Chapter 1.cbz":{"chapterId":"1","title":"Prologue"}}'></textarea>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button id="uploadChBtn">Upload Chapters</button>
+      <span id="uploadMsg" class="muted"></span>
+    </div>
+    <div id="uploadResults" class="muted" style="margin-top:10px;"></div>
+  </section>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// Utility to fetch JSON safely
+async function fetchJSON(url, opts) {
+  try {
+    const res = await fetch(url, opts);
+    const text = await res.text();
+    if (!res.ok) throw new Error(text);
+    return JSON.parse(text);
+  } catch (e) {
+    console.error('fetchJSON error for', url, e);
+    throw e;
+  }
+}
+
+// Load all comics
+async function loadComics() {
+  $('listMsg').textContent = 'Loading...';
+  try {
+    const comics = await fetchJSON('/api/admin/comics');
+    const tbody = $('comicsTable').querySelector('tbody');
+    tbody.innerHTML = '';
+    for (const c of comics) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.id}</td>
+        <td>${c.title || ''}</td>
+        <td>${c.status || ''}</td>
+        <td>${c.author || ''}</td>
+        <td><a href="#" data-id="${c.id}" class="viewChapters">View</a></td>
+        <td>
+          <button class="fillBtn" data-id="${c.id}">Fill form</button>
+          <button class="deleteComicBtn" data-id="${c.id}" style="background:#b00020;">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+    $('listMsg').textContent = '';
+  } catch (e) {
+    $('listMsg').textContent = 'Failed to load comics';
+  }
+}
+
+// Toggle comics table visibility
+const toggleComicsBtn = document.createElement('button');
+toggleComicsBtn.textContent = 'Toggle Comics List';
+toggleComicsBtn.style.marginBottom = '12px';
+$('list').insertBefore(toggleComicsBtn, $('list').firstChild);
+toggleComicsBtn.addEventListener('click', () => {
+  const table = $('comicsTable');
+  table.style.display = table.style.display === 'none' ? 'table' : 'none';
+});
+
+// --- Delete comic with all chapters and files ---
+async function deleteComic(comicId) {
+  if (!confirm(`Delete comic "${comicId}"? This cannot be undone.`)) return;
+  try {
+    const res = await fetch(`/api/admin/comics/${encodeURIComponent(comicId)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`Failed to delete comic: ${res.statusText}`);
+    alert('Comic deleted ✔');
+    loadComics();
+  } catch (err) {
+    console.error(err);
+    alert('Failed to delete comic');
+  }
+}
+
+// --- Delete chapter with actual storage path ---
+async function deleteChapter(comicId, chapterId, btnElement) {
+  if (!confirm(`Delete chapter "${chapterId}"? This cannot be undone.`)) return;
+  try {
+    const res = await fetch(`/api/admin/comics/${encodeURIComponent(comicId)}/chapters/${encodeURIComponent(chapterId)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`Failed to delete chapter: ${res.statusText}`);
+    alert('Chapter deleted ✔');
+    btnElement.parentElement.remove();
+  } catch (err) {
+    console.error(err);
+    alert('Failed to delete chapter');
+  }
+}
+
+// Event delegation for buttons
+document.body.addEventListener('click', (e) => {
+  if (e.target.classList.contains('deleteComicBtn')) {
+    deleteComic(e.target.getAttribute('data-id'));
+  }
+  if (e.target.classList.contains('deleteChapterBtn')) {
+    deleteChapter(
+      e.target.getAttribute('data-comic'),
+      e.target.getAttribute('data-chapter'),
+      e.target
+    );
+  }
+  if (e.target.classList.contains('fillBtn')) {
+    fillComicForm(e.target.getAttribute('data-id'));
+  }
+  if (e.target.classList.contains('viewChapters')) {
+    e.preventDefault();
+    showChaptersPopup(e.target.getAttribute('data-id'));
+  }
+});
+
+// --- Chapters popup ---
+const popup = document.createElement('div');
+popup.style = `
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);display:none;
+  justify-content:center;align-items:center;z-index:1000;
+`;
+popup.innerHTML = `
+  <div style="background:#fff;padding:20px;border-radius:12px;max-height:80%;overflow:auto;width:400px;position:relative;">
+    <button id="closePopup" style="position:absolute; top:10px; right:10px;">✖</button>
+    <h3>Chapters</h3>
+    <ul id="chapterList" style="list-style:none; padding:0;"></ul>
+  </div>
+`;
+document.body.appendChild(popup);
+$('closePopup').addEventListener('click', () => popup.style.display = 'none');
+
+async function showChaptersPopup(comicId) {
+  try {
+    const comic = await fetchJSON(`/api/admin/comics/${comicId}`);
+    const ul = $('chapterList');
+    ul.innerHTML = '';
+    comic.chapters.forEach(ch => {
+      const li = document.createElement('li');
+      li.style = 'display:flex; justify-content:space-between; padding:6px 0;';
+      li.innerHTML = `
+        <span>${ch.id} - ${ch.title || 'No title'}</span>
+        <button class="deleteChapterBtn" data-comic="${comicId}" data-chapter="${ch.id}" style="background:#b00020;">Delete</button>
+      `;
+      ul.appendChild(li);
+    });
+    popup.style.display = 'flex';
+  } catch (err) {
+    console.error(err);
+    alert('Failed to load chapters');
+  }
+}
+
+// --- Fill comic form ---
+async function fillComicForm(id) {
+  try {
+    const comic = await fetchJSON('/api/admin/comics/' + id);
+    ['id','title','status','author','penciller','source','genre','description','shortdescription'].forEach(f => {
+      const el = $(`c_${f}`);
+      if (el) el.value = comic[f] || '';
+    });
+    $('comicMsg').textContent = 'Loaded metadata';
+  } catch (err) {
+    console.error(err);
+    $('comicMsg').textContent = 'Failed to load comic';
+  }
+}
+
+// --- Save comic metadata ---
+$('saveComic').addEventListener('click', async () => {
+  $('comicMsg').textContent = 'Saving...';
+  try {
+    // Build payload
+    let payload = ['id','title','status','author','penciller','source','genre','description','shortdescription']
+      .reduce((acc,f) => {
+        const val = $(`c_${f}`).value.trim();
+        if (val) acc[f] = val;   // ⬅️ only keep non-empty fields
+        return acc;
+      }, {});
+
+    if (!payload.id) {
+      $('comicMsg').textContent = 'Comic ID is required';
+      return;
+    }
+
+    await fetchJSON('/api/admin/comics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    $('comicMsg').textContent = 'Saved ✔';
+    loadComics();
+  } catch (e) {
+    console.error(e);
+    $('comicMsg').textContent = 'Failed to save';
+  }
+});
+
+// --- Cover upload button handler ---
+$('uploadCoverBtn').addEventListener('click', async () => {
+  const id = $('c_id').value.trim();
+  const f = $('coverFile').files[0];
+
+  if (!id) {
+    $('coverMsg').textContent = 'Set Comic ID first';
+    return;
+  }
+
+  if (!f) {
+    $('coverMsg').textContent = 'Choose an image';
+    return;
+  }
+
+  $('coverMsg').textContent = 'Uploading cover...';
+
+  try {
+    const fd = new FormData();
+    fd.append('cover', f);
+
+    // Assumes fetchJSON is globally available
+    const res = await fetchJSON(`/api/admin/comics/${encodeURIComponent(id)}/cover`, {
+      method: 'POST',
+      body: fd
+    });
+
+    $('coverMsg').innerHTML = `Cover uploaded ✔ <span class="muted">${res.coverUrl}</span>`;
+  } catch (e) {
+    console.error(e);
+    $('coverMsg').textContent = 'Cover upload failed';
+  }
+});
+
+// --- Batch upload chapters ---
+$('uploadChBtn').addEventListener('click', async () => {
+  const id = $('u_comic_id').value.trim();
+  const files = $('cbzFiles').files;
+  const meta = $('chaptersMeta').value.trim();
+  if (!id) { $('uploadMsg').textContent = 'Comic ID is required'; return; }
+  if (!files?.length) { $('uploadMsg').textContent = 'Select one or more CBZ files'; return; }
+  if (meta) { try { JSON.parse(meta); } catch { $('uploadMsg').textContent='Chapters metadata must be valid JSON'; return; } }
+  $('uploadMsg').textContent = 'Uploading...'; $('uploadResults').textContent='';
+  try {
+    const fd = new FormData();
+    fd.append('comic_id', id);
+    if (meta) fd.append('chaptersMeta', meta);
+    for (const f of files) fd.append('chapters', f);
+    const res = await fetchJSON('/api/admin/chapters/upload',{method:'POST',body:fd});
+    $('uploadMsg').textContent='Done';
+    $('uploadResults').innerHTML = res.results.map(r => r.ok ? `<div class="success">✔ ${r.file} → chapter ${r.chapterId}</div>` : `<div class="error">✖ ${r.file}: ${r.error}</div>`).join('') || '<span class="muted">No results</span>';
+  } catch(e) { console.error(e); $('uploadMsg').textContent='Upload failed'; }
+});
+
+// --- XML template download & load ---
+$('uploadXmlBtn').addEventListener('click', () => {
+  const file = $('xmlFile').files[0];
+  if (!file) { $('xmlMsg').textContent='Select an XML file first'; return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const xmlDoc = new DOMParser().parseFromString(e.target.result,"application/xml");
+
+      // Define mapping for both XML styles
+      const fieldMap = {
+        id: ['id'], // our template
+        title: ['title', 'Series'],
+        status: ['status', 'ty\\:PublishingStatusTachiyomi'],
+        author: ['author', 'Writer'],
+        penciller: ['penciller', 'Penciller'],
+        source: ['source'],
+        genre: ['genre', 'Genre'],
+        description: ['description', 'Summary'],
+        shortdescription: ['shortdescription'] // only in template
+      };
+
+      Object.entries(fieldMap).forEach(([field, tags]) => {
+        let value = '';
+        for (const tag of tags) {
+          const el = xmlDoc.querySelector(tag);
+          if (el && el.textContent.trim()) {
+            value = el.textContent.trim();
+            break;
+          }
+        }
+        const input = $(`c_${field}`);
+        if (input) input.value = value;
+      });
+
+      $('xmlMsg').textContent='XML loaded successfully ✔';
+    } catch(err){ 
+      console.error(err); 
+      $('xmlMsg').textContent='Failed to parse XML'; 
+    }
+  };
+  reader.readAsText(file);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // small helper (if you already have it, this simply re-uses)
+  const $ = (id) => document.getElementById(id);
+
+  // your XML template (edit content/fields as needed)
+  const xmlTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+<comic>
+  <id></id>
+  <title></title>
+  <status></status>
+  <author></author>
+  <penciller></penciller>
+  <source></source>
+  <genre></genre>
+  <description></description>
+  <shortdescription></shortdescription>
+</comic>`;
+
+  const btn = $('downloadXmlTemplate');
+  if (!btn) {
+    console.warn('downloadXmlTemplate button not found in DOM');
+    return;
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Create blob with proper mime and encoding
+    const blob = new Blob([xmlTemplate], { type: 'application/xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    // Create temporary anchor to trigger download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'comic_metadata_template.xml'; // filename user will get
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    // Revoke URL after short delay
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+});
+
+// --- Refresh comics list ---
+$('refreshList').addEventListener('click', loadComics);
+loadComics();
+
+// --- Logout ---
+$('logoutBtn').addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/admin/logout',{method:'POST'});
+    if(res.ok) window.location.href='/admin-login';
+    else alert('Logout failed.');
+  } catch(e){ console.error(e); alert('An error occurred while logging out.'); }
+});
+</script>
+</body>
+</html>

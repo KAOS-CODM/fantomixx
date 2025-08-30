@@ -27,6 +27,7 @@
     width: 100%;
     height: fit-content;
     border-radius: 6px;
+    object-fit: cover;
     display: block;
   }
   
