@@ -9,6 +9,7 @@ functions/data/excess.json
 functions/data/comics.json
 pocketbase-server/pocketbase.exe
 pocketbase-server/pb_data
+pocketbase-local
 functions/und
 *.md
 
