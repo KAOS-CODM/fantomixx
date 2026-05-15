@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.innerHTML = `
           <div class="comic-card">
-            <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}">
+            <img loading="lazy" src="${comic.cover_url || comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}">
             <h3 class="comic-title">${comic.title}</h3>
           </div>
         `;

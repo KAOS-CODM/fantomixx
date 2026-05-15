@@ -103,6 +103,11 @@ body {
     font-size: 22px;
     margin-bottom: 10px;
   }
+
+  button {
+    position: fixed;
+    top: 20px;
+  }
   
   .back-link {
     font-size: 14px;

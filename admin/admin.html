@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Comics Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+    h1 { margin: 0 0 16px; }
+    section { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; }
+    input[type="text"], textarea, select { width: 280px; padding: 8px; border: 1px solid #ccc; border-radius: 8px; }
+    textarea { width: 580px; height: 80px; }
+    #logoutBtn { padding:8px 16px; background:#111; color:#fff; border:none; border-radius:8px; cursor:pointer; margin-bottom:20px; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #888; background: #111; color: #fff; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #eee; padding: 8px; text-align: left; font-size: 14px; }
+    th { background: #fafafa; }
+    .muted { color: #666; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .note { font-size: 12px; color: #333; background: #f5f7ff; border: 1px solid #dfe5ff; padding: 10px; border-radius: 8px; }
+    .success { color: #0b7a0b; }
+    .error { color: #b00020; }
+    .table-responsive { overflow-x: auto; }
+    section { width: 100%; box-sizing: border-box; }
+    @media (max-width: 900px) {
+      body { margin: 12px; }
+      .row { flex-direction: column; align-items: stretch; }
+      input[type="text"], textarea, select { width: 100%; }
+      button { width: 100%; }
+      .grid { grid-template-columns: 1fr; }
+      table, th, td { font-size: 13px; }
+    }
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    .popup-card {
+      width: min(100%, 760px);
+      max-height: 90vh;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.18);
+      overflow: auto;
+    }
+    .popup-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .popup-header h3 { margin: 0; font-size: 1.2rem; }
+    .close-popup { background: transparent; border: none; font-size: 28px; line-height: 1; cursor: pointer; }
+    .popup-content ul { list-style: none; padding: 0; margin: 0; }
+    .popup-content li { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .popup-content li:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <h1>Comics Admin</h1>
+  <button id="logoutBtn">Logout</button>
+
+  <section id="list">
+    <h2>All Comics</h2>
+    <div class="row">
+      <button id="refreshList">Refresh</button>
+      <span id="listMsg" class="muted"></span>
+    </div>
+    <div class="table-responsive">
+      <table id="comicsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Author</th>
+            <th>Chapters</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody><!-- filled by JS --></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="createUpdateComic">
+    <h2>Create / Update Comic (metadata)</h2>
+
+    <div style="margin-bottom:16px;">
+      <label>Metadata Options:</label><br/>
+      <input id="xmlFile" type="file" accept=".xml" />
+      <button id="uploadXmlBtn">Load XML</button>
+      <button id="downloadXmlTemplate">Download Template</button>
+      <span id="xmlMsg" class="muted"></span>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Comic ID (optional, used only to update existing record)</label>
+        <input id="c_id" type="text" placeholder="Leave empty to create a new comic" />
+      </div>
+      <div>
+        <label>Title</label>
+        <input id="c_title" type="text" placeholder="Title" />
+      </div>
+      <div>
+        <label>Status</label>
+        <input id="c_status" type="text" placeholder="Ongoing / Completed" />
+      </div>
+      <div>
+        <label>Author</label>
+        <input id="c_author" type="text" placeholder="Author" />
+      </div>
+      <div>
+        <label>Penciller</label>
+        <input id="c_penciller" type="text" placeholder="Penciller" />
+      </div>
+      <div>
+        <label>Source</label>
+        <input id="c_source" type="text" placeholder="Source" />
+      </div>
+      <div>
+        <label>Genres (comma-separated)</label>
+        <input id="c_genre" type="text" placeholder="Action, Adventure, ..." />
+      </div>
+      <div style="grid-column: 1 / -1">
+        <label>Description</label>
+        <textarea id="c_description" placeholder="Long description"></textarea>
+      </div>
+      <div style="grid-column: 1 / -1">
+        <label>Short Description</label>
+        <textarea id="c_shortdescription" placeholder="Short description"></textarea>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button id="saveComic">Save Metadata</button>
+      <span id="comicMsg" class="muted"></span>
+    </div>
+
+    <div style="margin-top:16px;">
+      <label>Update Cover</label>
+      <input id="coverFile" type="file" accept=".jpg,.jpeg,.png,.webp" />
+      <button id="uploadCoverBtn">Upload Cover</button>
+      <span id="coverMsg" class="muted"></span>
+    </div>
+  </section>
+
+  <section id="uploadChapters">
+    <h2>Batch Upload Chapters (CBZ)</h2>
+    <p class="note">
+      Choose a Comic ID, then select one or more <strong>.cbz</strong> files.  
+      If you don’t pass metadata, the server will try to infer <em>chapterId</em> from filenames (first number found).  
+      Optionally, paste a JSON mapping: <code>{"Chapter 1.cbz":{"chapterId":"1","title":"Prologue"}}</code>
+    </p>
+    <div class="row">
+      <div>
+        <label>Comic ID</label>
+        <input id="u_comic_id" type="text" placeholder="existing comic id" />
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <input id="cbzFiles" type="file" accept=".cbz" multiple />
+    </div>
+    <div style="margin-top:8px;">
+      <label>Optional Chapters Meta (JSON)</label>
+      <textarea id="chaptersMeta" placeholder='{"Chapter 1.cbz":{"chapterId":"1","title":"Prologue"}}'></textarea>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button id="uploadChBtn">Upload Chapters</button>
+      <span id="uploadMsg" class="muted"></span>
+    </div>
+    <div id="uploadResults" class="muted" style="margin-top:10px;"></div>
+  </section>
+
+  <div id="popup" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-card">
+      <div class="popup-header">
+        <h3 id="popupTitle">Chapters</h3>
+        <button id="closePopup" class="close-popup" aria-label="Close">×</button>
+      </div>
+      <div class="popup-content">
+        <ul id="chapterList"></ul>
+      </div>
+    </div>
+  </div>
+
+<script type="module" src="/admin-assets/admin.js"></script>
+</body>
+</html>

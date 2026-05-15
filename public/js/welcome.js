@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
           card.className = "update-card";
           card.innerHTML = `
             <a href="/chapter?id=${comic.id}" style="color:#ffccff;">
-            <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}"></a>
+            <img loading="lazy" src="${comic.cover_url || comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}"></a>
             <h3>${comic.title}</h3>
           `;
           container.appendChild(card);

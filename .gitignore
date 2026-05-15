@@ -1,4 +1,3 @@
-ECHO is on.
 .env
 public/comics
 functions/node_modules
@@ -8,4 +7,23 @@ functions/db
 functions/logs
 functions/data/excess.json
 functions/data/comics.json
+pocketbase-server/pocketbase.exe
+pocketbase-server/pb_data
+functions/und
+*.md
+
+!README.md
 extraction
+
+# OS and editor temp files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+.vscode/
+
+# Local scratch/debug files
+functions/check_undici.js
+public/js/read.txt

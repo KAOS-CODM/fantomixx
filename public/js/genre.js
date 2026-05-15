@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.setAttribute("data-genre", (comic.genre || "").toLowerCase());
 
             card.innerHTML = `
-                <img src="${comic.cover}" alt="${comic.title}">
+                <img loading="lazy" src="${comic.cover_url || comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}">
                 <h3>${comic.title}</h3>
             `;
 

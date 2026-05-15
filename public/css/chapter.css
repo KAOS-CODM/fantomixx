@@ -17,18 +17,21 @@
 }
 
 #comic-details {
-    background: url('../assets/IMG_0246.JPG') center/cover no-repeat;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background: #1a1a1a;
-    border-radius: 12px;
+    background: #11161d;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.24);
+    display: grid;
+    gap: 1.5rem;
+    width: min(100%, 1200px);
   }
   
   #comic-details h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: #fff;
+    font-size: clamp(2rem, 2.5vw, 3rem);
+    margin-bottom: 12px;
+    color: #f8fafc;
   }
   
   #comic-details img {
@@ -50,71 +53,110 @@
     color: #fff;
   }
 
-  #chapter-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    place-items: center;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 0.5rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    gap: 1rem;
-    padding: 1rem;
-    width: auto;
-    box-sizing: border-box;
-  }
-
-  #chapter-list a {
+  .chapter-card-link {
+    display: block;
     text-decoration: none;
     color: inherit;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #chapter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-items: stretch;
+    align-items: stretch;
+    grid-auto-rows: minmax(0, auto);
+    width: 100%;
+    padding: 0;
+  }
+  
+
+  .chapter-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: rgba(16, 24, 41, 0.95);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .chapter-card-link:hover .chapter-card,
+  .chapter-card-link:focus-visible .chapter-card {
+    transform: translateY(-3px);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.25);
+  }
+
+  .chapter-card__thumb {
+    width: 100%;
+    min-height: 150px;
+    background: #111;
+    overflow: hidden;
+  }
+
+  .chapter-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
     transition: transform 0.3s ease;
   }
-  
-  #chapter-list a:hover {
-    transform: scale(1.02);
+
+  .chapter-card-link:hover .chapter-card__thumb img,
+  .chapter-card-link:focus-visible .chapter-card__thumb img {
+    transform: scale(1.03);
   }
 
-  .chapter-grid{
+  .chapter-card__meta {
     display: grid;
-    grid-template-rows: auto auto;
-    justify-items: center;
-    gap: 0.5rem;
-  }
-  
-  .chapter-grid img {
-    width: 100%;
-    height: fit-content;
-    object-fit: cover;
-    border-radius: 6px;
-  }
-  
-  .chapter-grid {
-    color: white;
-    font-size: 1rem;
-    background: #222;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    gap: 0.4rem;
+    padding: 1rem;
   }
 
-  .chapter-number {
+  .chapter-card__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #f8fafc;
+  }
+
+  .chapter-card__subtitle {
+    color: #a5b4fc;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .chapter-card__footer {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1rem;
-    color: white;
-    background: #222;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    flex-wrap: wrap;
   }
 
-  .chapter-id{
-    font-weight: bold;
+  .chapter-card__number {
+    color: #e2e8f0;
+    font-weight: 600;
   }
 
-  .last-read{
+  .resume-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .chapter-card__placeholder {
+    color: #94a3b8;
     font-size: 0.9rem;
-    color: #aaffaa;
   }
 
   @media (min-width: 601px) and (max-width: 1024px) {

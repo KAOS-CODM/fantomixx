@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
@@ -9,6 +8,7 @@ import { fileURLToPath } from 'url';
 import multer from 'multer';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import { pb } from './pb.js';
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(bodyParser.json());
 app.use(session({
-  secret: process.env.SESSION_SECRET, // change this
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false } // true if using HTTPS
@@ -36,63 +36,43 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 200 } // 200MB
 });
 
-const supabaseUrl = process.env.DB_URL;
-const supabaseKey = process.env.DB_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Hardcoded admin credentials (or from env variables)
-const ADMIN_USERNAME = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASS || '123456';
-
 // ===================== API ROUTES =====================
 
-// Econnerst test
-app.get('/api/test', (req,res) => res.json({ ok: true}));
-
-//fetch('/api/test'). then(r => r.json()).then(console.log).catch(console.error);
-
+// Health test
+app.get('/api/test', (req, res) => res.json({ ok: true }));
 
 // Get all comics
 app.get('/api/comics', async (req, res) => {
-  const { data, error } = await supabase
-    .from('comics')
-    .select('*');
-
-  if (error) {
-    console.error('Supabase error:', error);
+  try {
+    const comics = await pb.collection('comics').getFullList({
+      sort: '-created'
+    });
+    res.json(comics);
+  } catch (error) {
+    console.error('PocketBase error:', error);
     return res.status(500).json({ error: 'Failed to fetch comics' });
   }
-
-  res.json(data);
 });
 
-// Get single comic + chapters (CBZ only)
+// Get single comic + chapters
 app.get('/api/comics/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
     // Fetch comic
-    const { data: comic, error: comicError } = await supabase
-      .from('comics')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (comicError) return res.status(404).json({ error: 'Comic not found' });
+    const comic = await pb.collection('comics').getOne(id);
+    if (!comic) return res.status(404).json({ error: 'Comic not found' });
 
     // Fetch chapters
-    const { data: chapters, error: chapterError } = await supabase
-      .from('chapters')
-      .select('*')
-      .eq('comic_id', id)
-      .order('order', { ascending: true });
+    const chapters = await pb.collection('chapters').getFullList({
+      filter: `comic_id = "${id}"`,
+      sort: '+order'
+    });
 
-    if (chapterError) return res.status(500).json({ error: chapterError.message });
-
-    // Map chapters to include CBZ URL only
+    // Map chapters to include CBZ download URL only
     const chaptersWithCBZ = chapters.map(chapter => ({
       ...chapter,
-      cbz: chapter.cbz_url || null
+      cbz: chapter.cbz_url ? pb.files.getURL(chapter, chapter.cbz_url) : null
     }));
 
     res.json({ ...comic, chapters: chaptersWithCBZ });
@@ -104,18 +84,22 @@ app.get('/api/comics/:id', async (req, res) => {
 
 // Get genres
 app.get('/api/genres', async (req, res) => {
-  const { data, error } = await supabase.from('comics').select('*');
-  if (error) return res.status(500).json({ error: 'Failed to fetch comics' });
+  try {
+    const comics = await pb.collection('comics').getFullList();
 
-  const genreMap = {};
-  for (const comic of data) {
-    const genres = (comic.genre || '').split(',').map(g => g.trim()).filter(Boolean);
-    for (const genre of genres) {
-      if (!genreMap[genre]) genreMap[genre] = [];
-      genreMap[genre].push(comic);
+    const genreMap = {};
+    for (const comic of comics) {
+      const genres = (comic.genre || '').split(',').map(g => g.trim()).filter(Boolean);
+      for (const genre of genres) {
+        if (!genreMap[genre]) genreMap[genre] = [];
+        genreMap[genre].push(comic);
+      }
     }
+    res.json(genreMap);
+  } catch (error) {
+    console.error('Error fetching comics:', error);
+    return res.status(500).json({ error: 'Failed to fetch comics' });
   }
-  res.json(genreMap);
 });
 
 // Navigation JSON
@@ -138,89 +122,104 @@ app.get('/api/footer', (req, res) => {
 
 // ---------------- ADMIN HELPERS ----------------
 
-async function uploadCBZBufferToSupabase({ buffer, originalName, comicId }) {
-  const safeName = originalName.replace(/\s+/g, '_');
-  const storagePath = `${comicId}/${safeName}`;
-  const { error } = await supabase.storage
-    .from('comics')
-    .upload(storagePath, buffer, { contentType: 'application/x-cbz', upsert: true });
-  if (error) throw new Error(`Supabase upload failed: ${error.message}`);
-  const { data: { publicUrl } } = supabase.storage.from('comics').getPublicUrl(storagePath);
-  return { publicUrl, storagePath };
+async function uploadCBZBufferToPocketBase({ buffer, originalName, comicId, chapterId }) {
+  // PocketBase file storage path
+  const fileName = originalName.replace(/\s+/g, '_');
+  const storagePath = `chapters/${comicId}/${chapterId}/${fileName}`;
+  
+  try {
+    // For PocketBase, files are uploaded as part of record creation/update
+    // We'll return the file path to be stored in the record
+    return { fileName, storagePath };
+  } catch (error) {
+    throw new Error(`File path preparation failed: ${error.message}`);
+  }
 }
 
 async function upsertComicMetadata(payload) {
   try {
-    // Get current metadata
-    const { data: existing, error: fetchError } = await supabase
-      .from('comics')
-      .select('*')
-      .eq('id', payload.id)
-      .single();
+    const { id, ...data } = payload;
 
-    if (fetchError && fetchError.code !== 'PGRST116') { // ignore "row not found"
-      throw fetchError;
+    // Try to fetch existing comic by record id if one was provided.
+    let existing = null;
+    if (id) {
+      try {
+        existing = await pb.collection('comics').getOne(id);
+      } catch (err) {
+        // Record doesn't exist, which is fine.
+      }
     }
 
-    // Merge: keep old values, overwrite only provided ones
-    const merged = existing ? { ...existing, ...payload } : payload;
-
-    // Now save
-    const { data, error } = await supabase.from('comics').upsert([merged]);
-
-    if (error) {
-      console.error('Supabase upsert error:', error);
-      throw new Error(error.message);
+    if (existing) {
+      const updated = await pb.collection('comics').update(id, data);
+      console.log('PocketBase comic updated:', updated);
+      return updated;
     }
 
-    console.log('Supabase upsert success:', data);
-    return data;
+    // Create a new record without a custom id so PocketBase can generate a valid one.
+    const created = await pb.collection('comics').create(data);
+    console.log('PocketBase comic created:', created);
+    return created;
   } catch (e) {
     console.error('upsertComicMetadata failed:', e);
     throw e;
   }
 }
 
-async function upsertChapterRecord({ comicId, chapterId, cbzUrl, title }) {
-  const chapterRow = {
-    id: String(chapterId),
+async function upsertChapterRecord({ comicId, chapterId, cbzUrl, title, cbzFile }) {
+  const chapterData = {
     comic_id: comicId,
     title: title || `Chapter ${chapterId}`,
     order: parseInt(chapterId, 10),
     cbz_url: cbzUrl || null
   };
-  const { error } = await supabase.from('chapters').upsert([chapterRow]);
-  if (error) throw new Error(error.message);
+
+  // Add file if provided
+  if (cbzFile) {
+    chapterData.cbz_file = cbzFile;
+  }
+
+  try {
+    // PocketBase: create a chapter record with file
+    const result = await pb.collection('chapters').create(chapterData);
+    return result;
+  } catch (error) {
+    throw new Error(`Failed to create chapter record: ${error.message}`);
+  }
 }
 
 // ===================== ADMIN API =====================
 
-// List comics
+// List comics (paginated)
 app.get('/api/admin/comics', async (req, res) => {
   try {
     const { from = 0, to = 49 } = req.query;
-    const { data, error } = await supabase.from('comics').select('*').range(Number(from), Number(to));
-    if (error) throw error;
-    res.json(data);
+    const page = Math.floor(Number(from) / 50) + 1;
+    const perPage = Number(to) - Number(from) + 1;
+    
+    const data = await pb.collection('comics').getList(page, perPage, {
+      sort: '-created'
+    });
+    
+    res.json(data.items);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: String(e.message || e) });
   }
 });
 
-// Get single comic for admin
+// Get single comic for admin (with chapters)
 app.get('/api/admin/comics/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { data: comic, error: comicError } = await supabase.from('comics').select('*').eq('id', id).single();
-    if (comicError) return res.status(404).json({ error: 'Comic not found' });
+    
+    const comic = await pb.collection('comics').getOne(id);
+    if (!comic) return res.status(404).json({ error: 'Comic not found' });
 
-    const { data: chapters, error: chapterError } = await supabase
-      .from('chapters')
-      .select('*')
-      .eq('comic_id', id)
-      .order('order', { ascending: true });
-    if (chapterError) throw chapterError;
+    const chapters = await pb.collection('chapters').getFullList({
+      filter: `comic_id = "${id}"`,
+      sort: '+order'
+    });
 
     res.json({ ...comic, chapters });
   } catch (e) {
@@ -233,15 +232,15 @@ app.get('/api/admin/comics/:id', async (req, res) => {
 app.post('/api/admin/comics', async (req, res) => {
   try {
     const payload = req.body;
-    if (!payload?.id) return res.status(400).json({ error: 'Missing comic id' });
-    await upsertComicMetadata(payload);
-    res.json({ ok: true });
+    const result = await upsertComicMetadata(payload);
+    res.json({ ok: true, record: result });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: String(e.message || e) });
   }
 });
 
+// Upload cover image and save the generated URL to cover_url
 app.post('/api/admin/comics/:id/cover', upload.single('cover'), async (req, res) => {
   try {
     const comicId = req.params.id;
@@ -251,25 +250,20 @@ app.post('/api/admin/comics/:id/cover', upload.single('cover'), async (req, res)
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Upload to Supabase Storage
-    const storagePath = `${comicId}/cover${path.extname(file.originalname)}`;
-    const { error: uploadError } = await supabase.storage
-      .from('comics')
-      .upload(storagePath, file.buffer, { upsert: true });
+    // Upload the cover file into the comics collection file field named 'cover'.
+    const formData = new FormData();
+    const coverBlob = new Blob([file.buffer], { type: file.mimetype });
+    formData.append('cover', coverBlob, file.originalname);
 
-    if (uploadError) throw uploadError;
+    const updated = await pb.collection('comics').update(comicId, formData);
+    const coverUrl = pb.files.getUrl(updated, updated.cover);
 
-    // Get public URL of the uploaded file
-    const { data } = supabase.storage.from('comics').getPublicUrl(storagePath);
-    const coverUrl = data.publicUrl;
+    if (!coverUrl) {
+      return res.status(500).json({ error: 'Failed to generate cover URL' });
+    }
 
-    // Update comics table with new cover URL
-    const { error: updateError } = await supabase
-      .from('comics')
-      .update({ cover: coverUrl })
-      .eq('id', comicId);
-
-    if (updateError) throw updateError;
+    // Save the generated URL into the cover_url text field.
+    await pb.collection('comics').update(comicId, { cover_url: coverUrl });
 
     res.json({ coverUrl });
   } catch (err) {
@@ -313,41 +307,24 @@ app.post('/api/admin/chapters/upload', upload.array('chapters', 50), async (req,
       }
 
       const title = hint.title || `Chapter ${chapterId}`;
-      let storagePath;
 
       try {
-        // Upload CBZ to Supabase
-        const uploadResult = await uploadCBZBufferToSupabase({
-          buffer: file.buffer,
-          originalName: original,
-          comicId: comic_id
-        });
+        // Create FormData for file upload
+        const formData = new FormData();
+        formData.append('comic_id', comic_id);
+        formData.append('title', title);
+        formData.append('order', String(Number(chapterId)));
+        const cbzBlob = new Blob([file.buffer], { type: 'application/x-cbz' });
+        formData.append('cbz_url', cbzBlob, original);
 
-        storagePath = uploadResult.storagePath;
-        const publicUrl = uploadResult.publicUrl;
-
-        // Save record in DB
-        await upsertChapterRecord({
-          comicId: comic_id,
-          chapterId,
-          cbzUrl: publicUrl,
-          title
-        });
-
-        results.push({ file: original, ok: true, chapterId, url: publicUrl, storagePath });
-
+        // Create chapter record with file in PocketBase
+        const chapter = await pb.collection('chapters').create(formData);
+        
+        // Get the file URL
+        const cbzUrl = pb.files.getURL(chapter, chapter.cbz_url);
+        results.push({ file: original, ok: true, chapter, cbzUrl });
       } catch (err) {
         console.error('Upload error for', original, err);
-
-        // Cleanup partially uploaded file if any
-        if (storagePath) {
-          try {
-            await supabase.storage.from('comics').remove([storagePath]);
-          } catch (cleanupErr) {
-            console.error('Failed to remove partial file:', cleanupErr);
-          }
-        }
-
         results.push({ file: original, ok: false, error: err.message });
       }
     }
@@ -359,41 +336,23 @@ app.post('/api/admin/chapters/upload', upload.array('chapters', 50), async (req,
   }
 });
 
-// DELETE /api/admin/comics/:id
+// DELETE comic
 app.delete('/api/admin/comics/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // 1. Fetch all chapters to get their storage paths
-    const { data: chapters, error: chapterErr } = await supabase
-      .from('chapters')
-      .select('id, cbz_url')
-      .eq('comic_id', id);
+    // Fetch all chapters to delete them first
+    const chapters = await pb.collection('chapters').getFullList({
+      filter: `comic_id = "${id}"`
+    });
 
-    if (chapterErr) throw chapterErr;
-
-    // 2. Delete all chapter records
-    if (chapters.length) {
-      const chapterIds = chapters.map(c => c.id);
-      await supabase.from('chapters').delete().in('id', chapterIds);
+    // Delete all chapter records
+    for (const chapter of chapters) {
+      await pb.collection('chapters').delete(chapter.id);
     }
 
-    // 3. Delete comic record
-    await supabase.from('comics').delete().eq('id', id);
-
-    // 4. Delete all files in Supabase Storage
-    // List all files under the comic folder
-    const { data: files, error: listErr } = await supabase.storage
-      .from('comics')
-      .list(id, { limit: 1000, offset: 0 });
-
-    if (listErr) console.warn('Failed to list files:', listErr.message);
-
-    const filePaths = files?.map(f => `${id}/${f.name}`) || [];
-    if (filePaths.length) {
-      const { error: delErr } = await supabase.storage.from('comics').remove(filePaths);
-      if (delErr) console.warn('Failed to delete files:', delErr.message);
-    }
+    // Delete the comic record
+    await pb.collection('comics').delete(id);
 
     res.json({ ok: true });
   } catch (err) {
@@ -402,30 +361,13 @@ app.delete('/api/admin/comics/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/comics/:comicId/chapters/:chapterId
+// DELETE chapter
 app.delete('/api/admin/comics/:comicId/chapters/:chapterId', requireAdmin, async (req, res) => {
   const { comicId, chapterId } = req.params;
 
   try {
-    // 1. Fetch chapter record to get storage path
-    const { data: chapter, error: chErr } = await supabase
-      .from('chapters')
-      .select('cbz_url')
-      .eq('comic_id', comicId)
-      .eq('id', chapterId)
-      .single();
-
-    if (chErr && chErr.code !== 'PGRST116') throw chErr; // ignore not found
-
-    // 2. Delete chapter record
-    await supabase.from('chapters').delete().eq('comic_id', comicId).eq('id', chapterId);
-
-    // 3. Delete CBZ file from Supabase Storage if exists
-    if (chapter?.cbz_url) {
-      const url = new URL(chapter.cbz_url);
-      const filePath = decodeURIComponent(url.pathname.replace(/^\/storage\/v1\/object\/public\/comics\//, ''));
-      await supabase.storage.from('comics').remove([filePath]).catch(console.warn);
-    }
+    // Delete the chapter record (PocketBase will handle file cleanup)
+    await pb.collection('chapters').delete(chapterId);
 
     res.json({ ok: true });
   } catch (err) {
@@ -434,19 +376,57 @@ app.delete('/api/admin/comics/:comicId/chapters/:chapterId', requireAdmin, async
   }
 });
 
-// --- LOGIN ---
-app.post('/api/admin/login', (req, res) => {
-  const { username, password } = req.body;
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    req.session.isAdmin = true;       // mark session as logged in
-    res.json({ success: true });
-  } else {
+// --- PROTECT ADMIN PAGES ---
+function requireAdmin(req, res, next) {
+  // Check if admin is authenticated with PocketBase
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (token && pb.authStore.isValid && pb.authStore.token) {
+    return next();
+  }
+  
+  // Fallback: check session
+  if (req.session.isAdmin) {
+    return next();
+  }
+  
+  res.status(401).json({ error: 'Unauthorized' });
+}
+
+// --- ADMIN LOGIN ---
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Authenticate with PocketBase admin auth
+    const authData = await pb.collection('admins').authWithPassword(email, password);
+
+    if (!authData.record.active) {
+      return res.status(403).json({ error: 'Account disabled' });
+    }
+
+    // Store in session
+    req.session.isAdmin = true;
+    req.session.adminId = authData.record.id;
+
+    res.json({ 
+      success: true, 
+      token: pb.authStore.token,
+      admin: {
+        id: authData.record.id,
+        email: authData.record.email,
+        role: authData.record.role
+      }
+    });
+  } catch (err) {
+    console.error('Login error:', err);
     res.status(401).json({ error: 'Invalid credentials' });
   }
 });
 
-// --- LOGOUT ---
+// --- ADMIN LOGOUT ---
 app.post('/api/admin/logout', (req, res) => {
+  pb.authStore.clear();
   req.session.destroy(err => {
     if (err) return res.status(500).json({ error: 'Logout failed' });
     res.json({ success: true });
@@ -455,30 +435,31 @@ app.post('/api/admin/logout', (req, res) => {
 
 // --- CHECK SESSION (for frontend) ---
 app.get('/api/admin/session', (req, res) => {
-  if (req.session.isAdmin) {
-    res.json({ isAdmin: true });
+  if (req.session.isAdmin || (pb.authStore.isValid && pb.authStore.token)) {
+    res.json({ 
+      isAdmin: true,
+      token: pb.authStore.token 
+    });
   } else {
     res.status(401).json({ isAdmin: false });
   }
 });
 
-// --- PROTECT ADMIN PAGES ---
-function requireAdmin(req, res, next) {
-  if (req.session.isAdmin) return next();
-  res.redirect('/admin-login');
-}
-
 // --- ADMIN PAGE ROUTE ---
 app.get('/admin', requireAdmin, (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'admin.html'));
+  res.sendFile(path.join(__dirname, '../admin', 'admin.html'));
 });
 
 // --- ADMIN LOGIN PAGE ROUTE ---
 app.get('/admin-login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'admin-login.html'));
+  res.sendFile(path.join(__dirname, '../admin', 'admin-login.html'));
 });
 
 // ===================== STATIC FILES & FRONTEND FALLBACK =====================
+
+// Serve admin assets
+app.use('/admin-assets', express.static(path.join(__dirname, '../admin')));
+
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use((req, res, next) => {

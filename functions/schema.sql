@@ -1,6 +1,18 @@
-create table comics (
-  id text primary key,
-  title text not null,
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.chapters (
+  id text NOT NULL,
+  comic_id text NOT NULL,
+  title text,
+  order integer,
+  cbz_url text,
+  CONSTRAINT chapters_pkey PRIMARY KEY (id, comic_id),
+  CONSTRAINT chapters_comic_id_fkey FOREIGN KEY (comic_id) REFERENCES public.comics(id)
+);
+CREATE TABLE public.comics (
+  id text NOT NULL,
+  title text NOT NULL,
   description text,
   shortdescription text,
   author text,
@@ -8,26 +20,6 @@ create table comics (
   genre text,
   source text,
   status text,
-  cover text null
+  cover text,
+  CONSTRAINT comics_pkey PRIMARY KEY (id)
 );
-
-create table chapters (
-  id text,
-  comic_id text references comics(id) on delete cascade,
-  title text,
-  "order" integer,
-  primary key (id, comic_id)
-);
-
-create table chapter_images (
-  id uuid default gen_random_uuid() primary key,
-  chapter_id text,
-  comic_id text,
-  image_url text not null,
-  page_number integer,
-  foreign key (chapter_id, comic_id) references chapters(id, comic_id) on delete cascade
-);
-
-alter table chapter_images 
-add constraint unique_chapter_page 
-unique (chapter_id, comic_id, page_number);

@@ -21,13 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const progress = JSON.parse(localStorage.getItem(`progress_${comic.id}`));
+      const progress = JSON.parse(localStorage.getItem(`progress_${comic.id}`) || 'null');
 
       const container = document.createElement("div");
       container.innerHTML = `
         <a href="/comic" class="back-link">⬅ Back to comics page</a>
         <h2>${comic.title}</h2>
-        <img src="${comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}" />
+        <img src="${comic.cover_url || comic.cover || 'assets/default-cover.jpg'}" alt="${comic.title}" />
         <div class="metadata">
           <p><strong>Author:</strong> ${comic.author}</p>
           <p><strong>Penciller:</strong> ${comic.penciller}</p>
@@ -46,35 +46,33 @@ document.addEventListener("DOMContentLoaded", () => {
       comic.chapters.forEach(chapter => {
         let thumb;
         if (chapter.cbz) {
-          thumb = comic.cover;
+          thumb = comic.cover_url || comic.cover;
         } else {
           thumb = chapter.images?.[0] || "assets/default-thumb.jpg";
         }
         const card = document.createElement("a");
         card.href = `/read?comic=${comic.id}&chapter=${chapter.id}`;
         card.classList.add("chapter-card-link");
-        card.setAttribute("data-chapter", chapter.id.toString().toLowerCase());
-        card.style.display = "flex";
-        card.style.alignItems = "center";
-        card.style.gap = "15px";
-        card.style.padding = "10px";
-        card.style.border = "1px solid #ccc";
-        card.style.background = "#111";
-        card.style.borderRadius = "8px";
-        card.style.textDecoration = "none";
-        card.style.color = "#fff";
 
+        const chapterLabel = `Chapter ${chapter.title}`;
         let lastReadHTML = "";
+
         if (progress && progress.chapterId === chapter.id) {
-          lastReadHTML = `<div style="color: lightgreen; font-size: 0.9em;">Resume</div>`;
+          const pageInfo = progress.pageIndex !== undefined ? `Page ${progress.pageIndex + 1}` : "Resume";
+          lastReadHTML = `<div class="resume-badge">Resume ${pageInfo}</div>`;
         }
 
         card.innerHTML = `
-        <div class="chapter-grid">
-          <img src="${thumb}" onerror="this.src='assets/default-thumb.jpg'" />
-          <div class="chapter-number">
-            <span class="chapter-id">${chapter.id.toString().padStart(3, '0')}</span>
-            <span class="last-read">${lastReadHTML}</span>
+        <div class="chapter-card">
+          <div class="chapter-card__thumb">
+            <img loading="lazy" src="${thumb}" onerror="this.src='assets/default-thumb.png'" alt="${chapterLabel}" />
+          </div>
+          <div class="chapter-card__meta">
+            <div class="chapter-card__subtitle">${chapter.title && chapter.title !== "" ? chapter.title : "Untitled chapter"}</div>
+            <div class="chapter-card__footer">
+              <span class="chapter-card__number">#${chapter.title.toString().padStart(3, '0')}</span>
+              ${lastReadHTML || '<span class="chapter-card__placeholder">Start reading</span>'}
+            </div>
           </div>
         </div>
         `;

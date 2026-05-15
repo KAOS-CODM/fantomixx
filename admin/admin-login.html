@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+<style>
+  body { display:flex; justify-content:center; align-items:center; height:100vh; font-family:system-ui; background:#f5f5f5; }
+  .login-box { padding:20px; border:1px solid #ccc; border-radius:12px; width:300px; text-align:center; background:white; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+  .login-box h2 { margin:0 0 20px; color:#333; }
+  input { width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #ddd; box-sizing:border-box; }
+  input:focus { outline:none; border-color:#111; box-shadow:0 0 0 2px rgba(17,17,17,0.1); }
+  button { width:100%; padding:10px; margin-top:12px; border-radius:8px; border:none; background:#111; color:#fff; cursor:pointer; font-weight:bold; transition:background 0.2s; }
+  button:hover { background:#333; }
+  button:active { opacity:0.9; }
+  .error { color:#b00020; font-size:12px; margin-top:8px; min-height:16px; }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <input type="email" id="username" placeholder="Email Address" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="loginBtn">Sign In</button>
+    <div id="errorMsg" class="error"></div>
+  </div>
+
+<script type="module" src="/admin-assets/login.js"></script>
+</body>
+</html>
